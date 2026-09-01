@@ -14,6 +14,7 @@ import {
   MessageSquareShare,
   Sliders,
   Sparkles,
+  Tag,
 } from 'lucide-react';
 
 export const QuickActionGrid: React.FC = () => {
