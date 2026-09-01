@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS orders (
   
   -- Product Details
   product_name TEXT NOT NULL,
+  product_url TEXT DEFAULT '',
   product_image_url TEXT DEFAULT '',
   order_date DATE NOT NULL DEFAULT CURRENT_DATE,
   

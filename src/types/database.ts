@@ -24,6 +24,7 @@ export interface Order {
   
   // Product
   product_name: string;
+  product_url?: string;
   product_image_url?: string;
   order_date: string; // YYYY-MM-DD
   

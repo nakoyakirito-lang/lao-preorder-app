@@ -187,6 +187,20 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
               WhatsApp
             </a>
           )}
+
+          {/* Product URL Link if available */}
+          {order.product_url && (
+            <a
+              href={order.product_url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/30 hover:bg-sky-500/20"
+              title="ເບິ່ງລິ້ງສັ່ງສິນຄ້າ"
+            >
+              <ExternalLink size={13} />
+              ລິ້ງສິນຄ້າ
+            </a>
+          )}
         </div>
 
         <div className="flex items-center gap-1.5">

@@ -147,6 +147,16 @@ export default function PublicTrackingPage() {
               <p className="text-[11px] text-slate-400 mt-0.5">
                 ວັນທີສັ່ງຊື້: {order.order_date}
               </p>
+              {order.product_url && (
+                <a
+                  href={order.product_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] text-sky-400 hover:underline mt-1 font-semibold"
+                >
+                  🔗 ເບິ່ງລິ້ງສິນຄ້າຕົ້ນທາງ
+                </a>
+              )}
             </div>
           </div>
         </div>

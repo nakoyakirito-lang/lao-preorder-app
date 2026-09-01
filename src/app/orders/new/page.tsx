@@ -41,6 +41,7 @@ export default function NewOrderPage() {
   const [deliveryBranch, setDeliveryBranch] = useState('');
 
   const [productName, setProductName] = useState('');
+  const [productUrl, setProductUrl] = useState('');
   const [productImageUrl, setProductImageUrl] = useState('');
   const [foreignTrackingNo, setForeignTrackingNo] = useState('');
   const [originCost, setOriginCost] = useState<number | ''>('');
@@ -89,6 +90,7 @@ export default function NewOrderPage() {
       delivery_provider: deliveryProvider,
       delivery_branch: deliveryBranch,
       product_name: productName,
+      product_url: productUrl,
       product_image_url: productImageUrl,
       order_date: new Date().toISOString().split('T')[0],
       origin_currency: originCurrency,
@@ -196,6 +198,20 @@ export default function NewOrderPage() {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               placeholder="ເຊັ່ນ: ເກີບ Nike Dunk Low (ຂາວ-ດຳ) ເບີ 42"
+              className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:border-neon focus:outline-none"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
+              <span>🔗 ລິ້ງສັ່ງສິນຄ້າ (Product URL)</span>
+              <span className="text-[10px] text-slate-400">Taobao / 1688 / Shopee / TikTok</span>
+            </label>
+            <input
+              type="url"
+              value={productUrl}
+              onChange={(e) => setProductUrl(e.target.value)}
+              placeholder="https://item.taobao.com/... ຫຼື https://shopee.co.th/..."
               className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:border-neon focus:outline-none"
             />
           </div>
