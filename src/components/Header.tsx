@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
-import { Search, Bell, ShieldCheck, Flame } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Bell, ShieldCheck, Flame, Camera, ScanLine } from 'lucide-react';
+import { BarcodeScannerModal } from './BarcodeScannerModal';
 import Link from 'next/link';
 
 interface HeaderProps {
@@ -15,6 +16,8 @@ export const Header: React.FC<HeaderProps> = ({
   onSearchChange,
   onSearchSubmit,
 }) => {
+  const [showScanner, setShowScanner] = useState(false);
+
   return (
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-slate-800/80 px-4 pt-3 pb-3">
       {/* Top Profile & Shop Banner */}
@@ -40,6 +43,16 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowScanner(true)}
+            className="h-9 px-2.5 rounded-xl bg-neon/15 border border-neon/40 text-neon flex items-center gap-1.5 text-xs font-bold hover:bg-neon hover:text-black transition-all shadow-neon-sm"
+            title="ສະແກນບາໂຄ້ດ"
+          >
+            <Camera size={16} />
+            <span>ສະແກນ</span>
+          </button>
+
           <Link
             href="/settings"
             className="w-9 h-9 rounded-xl bg-surface border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
@@ -50,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Global Search Bar */}
-      <div className="relative">
+      <div className="relative flex items-center">
         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
           <Search size={17} className="text-slate-400" />
         </div>
@@ -60,17 +73,37 @@ export const Header: React.FC<HeaderProps> = ({
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && onSearchSubmit && onSearchSubmit()}
           placeholder="ປ້ອນເລກພັດສະດຸ, ເບີໂທ ຫຼື ຊື່ລູກຄ້າ..."
-          className="w-full pl-10 pr-10 py-2.5 bg-surface text-slate-100 placeholder-slate-500 rounded-xl text-xs sm:text-sm border border-slate-700 focus:outline-none focus:border-neon focus:ring-1 focus:ring-neon transition-all"
+          className="w-full pl-10 pr-20 py-2.5 bg-surface text-slate-100 placeholder-slate-500 rounded-xl text-xs sm:text-sm border border-slate-700 focus:outline-none focus:border-neon focus:ring-1 focus:ring-neon transition-all"
         />
-        {searchQuery && (
+        <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+          {searchQuery && (
+            <button
+              onClick={() => onSearchChange('')}
+              className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-200 text-xs"
+            >
+              ✕
+            </button>
+          )}
           <button
-            onClick={() => onSearchChange('')}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200 text-xs"
+            type="button"
+            onClick={() => setShowScanner(true)}
+            className="h-8 px-2 rounded-lg bg-slate-800 border border-slate-700 hover:border-neon text-neon flex items-center justify-center transition-all"
+            title="ສະແກນກ້ອງ"
           >
-            ✕
+            <Camera size={15} />
           </button>
-        )}
+        </div>
       </div>
+
+      {showScanner && (
+        <BarcodeScannerModal
+          onScanSuccess={(code) => {
+            onSearchChange(code);
+            setShowScanner(false);
+          }}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </header>
   );
 };

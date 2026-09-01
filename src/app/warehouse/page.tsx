@@ -8,7 +8,8 @@ import { CheckInModal } from '@/components/warehouse/CheckInModal';
 import { Order } from '@/types/database';
 import { getOrders, saveOrder } from '@/lib/storage';
 import { useRouter } from 'next/navigation';
-import { Warehouse, Search, CheckCircle2, ArrowLeft, Plus } from 'lucide-react';
+import { BarcodeScannerModal } from '@/components/BarcodeScannerModal';
+import { Warehouse, Search, CheckCircle2, ArrowLeft, Plus, Camera, ScanLine } from 'lucide-react';
 import Link from 'next/link';
 
 export default function WarehousePage() {
@@ -17,6 +18,7 @@ export default function WarehousePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTab, setFilterTab] = useState<'pending_shipping' | 'arrived'>('pending_shipping');
   const [activeCheckInOrder, setActiveCheckInOrder] = useState<Order | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
@@ -34,6 +36,19 @@ export default function WarehousePage() {
     await saveOrder(updatedOrder);
     await loadData();
     setActiveCheckInOrder(null);
+  };
+
+  const handleScanSuccess = (scannedText: string) => {
+    setSearchQuery(scannedText);
+    // Auto-match order
+    const match = orders.find(
+      (o) =>
+        o.tracking_code.toLowerCase() === scannedText.toLowerCase() ||
+        (o.foreign_tracking_no && o.foreign_tracking_no.toLowerCase() === scannedText.toLowerCase())
+    );
+    if (match) {
+      setActiveCheckInOrder(match);
+    }
   };
 
   const pendingShippingOrders = orders.filter(
@@ -77,19 +92,47 @@ export default function WarehousePage() {
             </p>
           </div>
         </div>
+
+        {/* Top Scan Shortcut Button */}
+        <button
+          onClick={() => setShowScanner(true)}
+          className="py-1.5 px-3 rounded-xl bg-neon/15 border border-neon/40 text-neon text-xs font-bold flex items-center gap-1.5 hover:bg-neon hover:text-black shadow-neon-sm transition-all"
+        >
+          <Camera size={15} />
+          <span>ສະແກນ</span>
+        </button>
       </div>
 
       <div className="p-4 space-y-3">
-        {/* Search */}
-        <div className="relative">
+        {/* Search Bar with Camera Scanner Icon */}
+        <div className="relative flex items-center">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="ສະແກນ ຫຼື ຄົ້ນຫາເລກແທຣັກກິ້ງ / ຊື່ລູກຄ້າ..."
-            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-neon"
+            className="w-full pl-10 pr-20 py-2.5 bg-surface border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-neon"
           />
+          <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="w-6 h-6 text-slate-400 hover:text-slate-200 text-xs flex items-center justify-center"
+              >
+                ✕
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setShowScanner(true)}
+              className="h-8 px-2.5 rounded-lg bg-neon text-black font-extrabold text-xs flex items-center gap-1 shadow-neon-sm hover:scale-105 active:scale-95 transition-all"
+              title="ເປີດກ້ອງສະແກນບາໂຄ້ດ"
+            >
+              <Camera size={14} />
+              <ScanLine size={14} />
+            </button>
+          </div>
         </div>
 
         {/* Tab Filters */}
@@ -149,6 +192,13 @@ export default function WarehousePage() {
           order={activeCheckInOrder}
           onClose={() => setActiveCheckInOrder(null)}
           onSave={handleCheckInSave}
+        />
+      )}
+
+      {showScanner && (
+        <BarcodeScannerModal
+          onScanSuccess={handleScanSuccess}
+          onClose={() => setShowScanner(false)}
         />
       )}
 
