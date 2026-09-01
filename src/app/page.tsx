@@ -35,6 +35,15 @@ export default function HomePage() {
     setActiveCheckInOrder(null);
   };
 
+  const handleUpdateStatus = async (id: string, newStatus: Order['status']) => {
+    const target = orders.find((o) => o.id === id);
+    if (target) {
+      const updated = { ...target, status: newStatus, updated_at: new Date().toISOString() };
+      await saveOrder(updated);
+      await loadData();
+    }
+  };
+
   const filteredOrders = orders.filter((o) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
@@ -100,6 +109,7 @@ export default function HomePage() {
                 <ParcelCard
                   key={order.id}
                   order={order}
+                  onUpdateStatus={handleUpdateStatus}
                   onCheckIn={(ord) => setActiveCheckInOrder(ord)}
                 />
               ))}

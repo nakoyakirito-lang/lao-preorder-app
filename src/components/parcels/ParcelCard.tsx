@@ -85,9 +85,29 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
           <span className="text-xs font-mono font-bold text-slate-300">
             {order.tracking_code}
           </span>
+        {/* Interactive Status Changer Dropdown */}
+        <div className="flex items-center gap-1">
+          <select
+            value={order.status}
+            onChange={(e) => {
+              const newSt = e.target.value as Order['status'];
+              if (onUpdateStatus) {
+                onUpdateStatus(order.id, newSt);
+              }
+              if (newSt === 'arrived_laos' && order.shipping_cost_lak === 0 && onCheckIn) {
+                onCheckIn(order);
+              }
+            }}
+            className="text-[11px] font-bold py-1 px-2 rounded-lg bg-background border border-slate-700 text-slate-200 focus:border-neon focus:outline-none cursor-pointer"
+          >
+            <option value="ordered">📦 ສັ່ງຊື້ແລ້ວ</option>
+            <option value="in_transit">🚚 ກຳລັງມາລາວ</option>
+            <option value="arrived_laos">🏢 ຮອດສາງລາວແລ້ວ</option>
+            <option value="delivering">🛵 ກຳລັງຈັດສົ່ງ</option>
+            <option value="completed">✅ ສຳເລັດ / ຈ່າຍແລ້ວ</option>
+            <option value="cancelled">❌ ຍົກເລີກ / ຕີກັບ</option>
+          </select>
         </div>
-
-        <StatusBadge status={order.status} />
       </div>
 
       {/* Main Card Body */}
