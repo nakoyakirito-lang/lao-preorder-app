@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { RouteType, OriginCurrency, Order, DELIVERY_PROVIDERS } from '@/types/database';
+import { RouteType, OriginCurrency, Order, DELIVERY_PROVIDERS, ServiceType } from '@/types/database';
 import {
   calculateProductCostLAK,
   calculateBalanceDueLAK,
