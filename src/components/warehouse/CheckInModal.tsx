@@ -43,6 +43,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
 
   // Editable Order Details State
   const [isEditing, setIsEditing] = useState(false);
+  const [orderDate, setOrderDate] = useState(order.order_date || new Date().toISOString().split('T')[0]);
   const [customerName, setCustomerName] = useState(order.customer_name);
   const [customerPhone, setCustomerPhone] = useState(order.customer_phone);
   const [productName, setProductName] = useState(order.product_name);
@@ -67,6 +68,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
   const handleSave = () => {
     const updated: Order = {
       ...order,
+      order_date: orderDate,
       customer_name: customerName,
       customer_phone: customerPhone,
       product_name: productName,
@@ -254,6 +256,33 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                     placeholder="https://..."
                     className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
                   />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-slate-300">
+                      📅 ວັນທີສັ່ງຊື້ (Order Date)
+                    </label>
+                    <input
+                      type="date"
+                      value={orderDate}
+                      onChange={(e) => setOrderDate(e.target.value)}
+                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-slate-300">
+                      ເລກແທຣັກຕົ້ນທາງ (ຈີນ/ໄທ)
+                    </label>
+                    <input
+                      type="text"
+                      value={foreignTrackingNo}
+                      onChange={(e) => setForeignTrackingNo(e.target.value)}
+                      placeholder="SF... / TH..."
+                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                    />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
