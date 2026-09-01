@@ -29,6 +29,7 @@ import Link from 'next/link';
 
 export default function NewOrderPage() {
   const router = useRouter();
+  const [serviceType, setServiceType] = useState<ServiceType>('BUY_FOR_YOU');
   const [route, setRoute] = useState<RouteType>('CHINA_LAOS');
   const [rates, setRates] = useState(DEFAULT_EXCHANGE_RATES);
 
@@ -46,6 +47,8 @@ export default function NewOrderPage() {
   const [foreignTrackingNo, setForeignTrackingNo] = useState('');
   const [originCost, setOriginCost] = useState<number | ''>('');
   const [customRate, setCustomRate] = useState<number | ''>('');
+  const [realCostRate, setRealCostRate] = useState<number | ''>('');
+  const [sellingPriceLAK, setSellingPriceLAK] = useState<number | ''>('');
   const [depositLAK, setDepositLAK] = useState<number | ''>('');
   const [notes, setNotes] = useState('');
 
@@ -67,7 +70,11 @@ export default function NewOrderPage() {
   const effectiveRate = Number(customRate) || (route === 'CHINA_LAOS' ? 3200 : 640);
   const productCostLAK = calculateProductCostLAK(Number(originCost) || 0, effectiveRate);
   const currentDepositLAK = Number(depositLAK) || 0;
-  const initialBalanceDueLAK = calculateBalanceDueLAK(productCostLAK, currentDepositLAK);
+  const effectiveCustomerBasePrice =
+    serviceType === 'PREORDER' && Number(sellingPriceLAK) > 0
+      ? Number(sellingPriceLAK)
+      : productCostLAK;
+  const initialBalanceDueLAK = calculateBalanceDueLAK(effectiveCustomerBasePrice, currentDepositLAK);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +88,7 @@ export default function NewOrderPage() {
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
       tracking_code: trackingCode,
+      service_type: serviceType,
       route,
       foreign_tracking_no: foreignTrackingNo,
       customer_name: customerName,
@@ -96,12 +104,16 @@ export default function NewOrderPage() {
       origin_currency: originCurrency,
       origin_cost: Number(originCost),
       exchange_rate: effectiveRate,
+      real_exchange_rate: realCostRate ? Number(realCostRate) : undefined,
       product_cost_lak: productCostLAK,
+      selling_price_lak: sellingPriceLAK ? Number(sellingPriceLAK) : undefined,
       shipping_cost_lak: 0,
+      actual_shipping_cost_lak: 0,
       service_fee_lak: 0,
-      total_cost_lak: productCostLAK,
+      total_cost_lak: effectiveCustomerBasePrice,
       deposit_lak: currentDepositLAK,
       balance_due_lak: initialBalanceDueLAK,
+      profit_lak: 0,
       status: 'ordered',
       notes,
       created_at: new Date().toISOString(),
@@ -145,6 +157,48 @@ export default function NewOrderPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        {/* Service Type Mode (Buy-for-you vs Preorder Retail) */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-slate-200">💼 ເລືອກຮູບແບບການບໍລິການ (Service Type)</label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setServiceType('BUY_FOR_YOU')}
+              className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-1 transition-all ${
+                serviceType === 'BUY_FOR_YOU'
+                  ? 'border-neon bg-neon/10 ring-1 ring-neon text-slate-100 shadow-neon-sm'
+                  : 'border-slate-800 bg-surface/60 text-slate-400 hover:border-slate-700'
+              }`}
+            >
+              <div className="flex items-center gap-1.5">
+                <span className="text-lg">📦</span>
+                <span className="text-xs font-extrabold text-slate-100">ຮັບສັ່ງເຄື່ອງ (Proxy)</span>
+              </div>
+              <p className="text-[10px] text-slate-400 leading-tight">
+                ລູກຄ້າຈ່າຍຄ່າເຄື່ອງ • ຮ້ານໄດ້ກຳໄລເລດເງິນ + ບວກຄ່າສົ່ງ
+              </p>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setServiceType('PREORDER')}
+              className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-1 transition-all ${
+                serviceType === 'PREORDER'
+                  ? 'border-neon bg-neon/10 ring-1 ring-neon text-slate-100 shadow-neon-sm'
+                  : 'border-slate-800 bg-surface/60 text-slate-400 hover:border-slate-700'
+              }`}
+            >
+              <div className="flex items-center gap-1.5">
+                <span className="text-lg">🏷️</span>
+                <span className="text-xs font-extrabold text-slate-100">ພຣີອໍເດີມາຂາຍ (Retail)</span>
+              </div>
+              <p className="text-[10px] text-slate-400 leading-tight">
+                ຮ້ານລົງທຶນຕົ້ນທຶນເອງ • ຕັ້ງລາຄາຂາຍ + ເກັບມັດຈຳ
+              </p>
+            </button>
+          </div>
+        </div>
+
         {/* Route Selector (China vs Thailand) */}
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-slate-200">🛣️ ເລືອກສາຍທາງຂົນສົ່ງ (Route)</label>

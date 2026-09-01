@@ -1,5 +1,6 @@
 export type RouteType = 'CHINA_LAOS' | 'THAI_LAOS';
 export type OriginCurrency = 'CNY' | 'THB';
+export type ServiceType = 'BUY_FOR_YOU' | 'PREORDER'; // ຮັບສັ່ງເຄື່ອງ (Proxy) vs ພຣີອໍເດີມາຂາຍ (Retail)
 export type OrderStatus =
   | 'ordered'        // ສັ່ງຊື້ແລ້ວ
   | 'in_transit'      // ກຳລັງເດີນທາງມາລາວ
@@ -11,6 +12,7 @@ export type OrderStatus =
 export interface Order {
   id: string;
   tracking_code: string;
+  service_type: ServiceType;
   route: RouteType;
   foreign_tracking_no: string;
   
@@ -28,18 +30,22 @@ export interface Order {
   product_image_url?: string;
   order_date: string; // YYYY-MM-DD
   
-  // Financials
+  // Financials & Currency
   origin_currency: OriginCurrency;
   origin_cost: number;
-  exchange_rate: number;
-  product_cost_lak: number;
+  exchange_rate: number;         // ເລດຮ້ານທີ່ຄິດໄລ່ເກັບລູກຄ້າ
+  real_exchange_rate?: number;    // ເລດຕົ້ນທຶນຕົວຈິງ (ຖ້າມີ)
+  product_cost_lak: number;      // ຄ່າສິນຄ້າເກັບລູກຄ້າ
+  selling_price_lak?: number;    // ລາຄາຂາຍລວມ (ກໍລະນີພຣີອໍເດີມາຂາຍ)
   
   // Arrival Shipping & Final Balance
-  shipping_cost_lak: number;
+  shipping_cost_lak: number;        // ຄ່າສົ່ງທີ່ເກັບນຳລູກຄ້າ (ເຊັ່ນ 80,000)
+  actual_shipping_cost_lak?: number; // ຕົ້ນທຶນຄ່າສົ່ງຈິງທີ່ຈ່າຍໃຫ້ຂົນສົ່ງ (ເຊັ່ນ 50,000)
   service_fee_lak: number;
-  total_cost_lak: number;
+  total_cost_lak: number;           // ຍອດລວມທີ່ເກັບນຳລູກຄ້າ
   deposit_lak: number;
-  balance_due_lak: number;
+  balance_due_lak: number;          // ຍອດ COD ທີ່ເຫຼືອເກັບລູກຄ້າ
+  profit_lak?: number;              // ກຳໄລສຸດທິຂອງຮ້ານ (ລວມສ່ວນຕ່າງເລດ + ກຳໄລຄ່າສົ່ງ + ຄ່າບໍລິການ)
   
   // Status
   status: OrderStatus;

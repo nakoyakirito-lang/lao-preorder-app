@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Package, Truck, CheckCircle2, DollarSign, ArrowUpRight } from 'lucide-react';
+import { Package, Truck, CheckCircle2, DollarSign, TrendingUp, Sparkles } from 'lucide-react';
 import { Order } from '@/types/database';
 import { formatLAK } from '@/lib/calculations';
 
@@ -13,7 +13,11 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ orders }) => {
   const totalOrders = orders.length;
   const inTransitCount = orders.filter((o) => o.status === 'in_transit' || o.status === 'ordered').length;
   const arrivedLaosCount = orders.filter((o) => o.status === 'arrived_laos').length;
-  const totalBalanceDue = orders.reduce((sum, o) => sum + (o.status !== 'completed' && o.status !== 'cancelled' ? o.balance_due_lak : 0), 0);
+  const totalBalanceDue = orders.reduce(
+    (sum, o) => sum + (o.status !== 'completed' && o.status !== 'cancelled' ? o.balance_due_lak : 0),
+    0
+  );
+  const totalProfit = orders.reduce((sum, o) => sum + (o.profit_lak || 0), 0);
 
   return (
     <div className="px-4 py-2">
@@ -29,9 +33,15 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ orders }) => {
             <div className="text-2xl font-black text-neon neon-glow-text tracking-tight">
               {formatLAK(totalBalanceDue)}
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              ພັດສະດຸລໍຖ້າຈັດສົ່ງ {arrivedLaosCount} ລາຍການ
-            </p>
+            <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-400">
+              <span>ລໍຖ້າຈັດສົ່ງ {arrivedLaosCount} ລາຍການ</span>
+              {totalProfit > 0 && (
+                <span className="text-emerald-400 font-bold flex items-center gap-0.5">
+                  <Sparkles size={12} />
+                  ກຳໄລສະສົມ: +{formatLAK(totalProfit)}
+                </span>
+              )}
+            </div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-neon/10 border border-neon/30 flex items-center justify-center text-neon shadow-neon-sm">
             <DollarSign size={24} />

@@ -53,6 +53,47 @@ export function calculateBalanceDueLAK(totalCostLAK: number, depositLAK: number)
 }
 
 /**
+ * Calculate Net Profit in Lao Kip for an order
+ * Supports both BUY_FOR_YOU (spread + shipping markup) and PREORDER (selling - actual cost)
+ */
+export function calculateOrderProfitLAK(order: {
+  service_type?: 'BUY_FOR_YOU' | 'PREORDER';
+  origin_cost?: number;
+  exchange_rate?: number;
+  real_exchange_rate?: number;
+  product_cost_lak?: number;
+  selling_price_lak?: number;
+  shipping_cost_lak?: number;
+  actual_shipping_cost_lak?: number;
+  service_fee_lak?: number;
+}): number {
+  const serviceType = order.service_type || 'BUY_FOR_YOU';
+  const shippingCharged = Number(order.shipping_cost_lak) || 0;
+  const actualShipping = Number(order.actual_shipping_cost_lak) || 0;
+  const serviceFee = Number(order.service_fee_lak) || 0;
+
+  // Shipping profit markup: (e.g. charged 80k - actual 50k = +30k)
+  const shippingProfit = actualShipping > 0 ? Math.max(0, shippingCharged - actualShipping) : 0;
+
+  if (serviceType === 'BUY_FOR_YOU') {
+    // Exchange rate spread profit (if real cost rate is known)
+    let rateSpreadProfit = 0;
+    if (order.origin_cost && order.exchange_rate && order.real_exchange_rate) {
+      const chargedProduct = order.origin_cost * order.exchange_rate;
+      const actualProduct = order.origin_cost * order.real_exchange_rate;
+      rateSpreadProfit = Math.max(0, chargedProduct - actualProduct);
+    }
+    return Math.round(rateSpreadProfit + shippingProfit + serviceFee);
+  } else {
+    // PREORDER Retail: selling_price - actual_product_cost - actual_shipping
+    const selling = Number(order.selling_price_lak) || Number(order.product_cost_lak) || 0;
+    const actualProduct = Number(order.product_cost_lak) || 0;
+    const grossMargin = selling - actualProduct;
+    return Math.round(grossMargin + shippingProfit + serviceFee);
+  }
+}
+
+/**
  * Generate a unique tracking code with prefix, date, and sequence
  * e.g. LA-CN-260902-123
  */

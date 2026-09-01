@@ -1,8 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Order, DELIVERY_PROVIDERS } from '@/types/database';
-import { formatLAK, calculateTotalCostLAK, calculateBalanceDueLAK } from '@/lib/calculations';
+import { Order, DELIVERY_PROVIDERS, ServiceType } from '@/types/database';
+import {
+  formatLAK,
+  calculateTotalCostLAK,
+  calculateBalanceDueLAK,
+  calculateOrderProfitLAK,
+} from '@/lib/calculations';
 import { generateCustomerMessage } from '@/lib/messageGenerator';
 import { ImageUpload } from '@/components/ImageUpload';
 import {
@@ -19,6 +24,9 @@ import {
   User,
   MapPin,
   Tag,
+  TrendingUp,
+  DollarSign,
+  Sparkles,
 } from 'lucide-react';
 
 interface CheckInModalProps {
@@ -32,9 +40,22 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
   onClose,
   onSave,
 }) => {
-  // Shipping & Arrival State
-  const [currentStatus, setCurrentStatus] = useState<Order['status']>(order.status || 'arrived_laos');
-  const [shippingCostLAK, setShippingCostLAK] = useState<number>(order.shipping_cost_lak || 0);
+  // Service Type
+  const [serviceType, setServiceType] = useState<ServiceType>(
+    order.service_type || 'BUY_FOR_YOU'
+  );
+
+  // Status & Arrival State
+  const [currentStatus, setCurrentStatus] = useState<Order['status']>(
+    order.status || 'arrived_laos'
+  );
+  // Shipping: Charged to Customer vs Actual Cost to Logistics
+  const [shippingCostLAK, setShippingCostLAK] = useState<number>(
+    order.shipping_cost_lak || 0
+  );
+  const [actualShippingCostLAK, setActualShippingCostLAK] = useState<number>(
+    order.actual_shipping_cost_lak || 0
+  );
   const [serviceFeeLAK, setServiceFeeLAK] = useState<number>(order.service_fee_lak || 0);
   const [weightKg, setWeightKg] = useState<number>(order.weight_kg || 1);
   const [notes, setNotes] = useState<string>(order.notes || '');
@@ -44,18 +65,27 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
 
   // Editable Order Details State
   const [isEditing, setIsEditing] = useState(false);
-  const [orderDate, setOrderDate] = useState(order.order_date || new Date().toISOString().split('T')[0]);
+  const [orderDate, setOrderDate] = useState(
+    order.order_date || new Date().toISOString().split('T')[0]
+  );
   const [customerName, setCustomerName] = useState(order.customer_name);
   const [customerPhone, setCustomerPhone] = useState(order.customer_phone);
   const [productName, setProductName] = useState(order.product_name);
   const [productUrl, setProductUrl] = useState(order.product_url || '');
   const [productCostLAK, setProductCostLAK] = useState<number>(order.product_cost_lak);
+  const [sellingPriceLAK, setSellingPriceLAK] = useState<number>(
+    order.selling_price_lak || order.product_cost_lak
+  );
   const [depositLAK, setDepositLAK] = useState<number>(order.deposit_lak || 0);
   const [deliveryProvider, setDeliveryProvider] = useState(order.delivery_provider);
   const [deliveryBranch, setDeliveryBranch] = useState(order.delivery_branch);
-  const [foreignTrackingNo, setForeignTrackingNo] = useState(order.foreign_tracking_no || '');
+  const [foreignTrackingNo, setForeignTrackingNo] = useState(
+    order.foreign_tracking_no || ''
+  );
   const [productImageUrl, setProductImageUrl] = useState(order.product_image_url || '');
-  const [customerSocialImage, setCustomerSocialImage] = useState(order.customer_social_image || '');
+  const [customerSocialImage, setCustomerSocialImage] = useState(
+    order.customer_social_image || ''
+  );
 
   const [copied, setCopied] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -63,28 +93,63 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
   // Live recalculation
   const effectiveProductCostLAK = Number(productCostLAK) || 0;
   const effectiveDepositLAK = Number(depositLAK) || 0;
-  const totalCostLAK = calculateTotalCostLAK(effectiveProductCostLAK, shippingCostLAK, serviceFeeLAK);
+  const effectiveShippingCharged = Number(shippingCostLAK) || 0;
+  const effectiveActualShipping = Number(actualShippingCostLAK) || 0;
+
+  // Customer Total & COD
+  const customerBaseCost =
+    serviceType === 'PREORDER' && sellingPriceLAK > 0
+      ? Number(sellingPriceLAK)
+      : effectiveProductCostLAK;
+
+  const totalCostLAK = calculateTotalCostLAK(
+    customerBaseCost,
+    effectiveShippingCharged,
+    serviceFeeLAK
+  );
   const balanceDueLAK = calculateBalanceDueLAK(totalCostLAK, effectiveDepositLAK);
+
+  // Net Profit for Shop
+  const shippingProfitLAK =
+    effectiveActualShipping > 0
+      ? Math.max(0, effectiveShippingCharged - effectiveActualShipping)
+      : 0;
+
+  const profitLAK = calculateOrderProfitLAK({
+    service_type: serviceType,
+    origin_cost: order.origin_cost,
+    exchange_rate: order.exchange_rate,
+    real_exchange_rate: order.real_exchange_rate,
+    product_cost_lak: effectiveProductCostLAK,
+    selling_price_lak: sellingPriceLAK,
+    shipping_cost_lak: effectiveShippingCharged,
+    actual_shipping_cost_lak: effectiveActualShipping,
+    service_fee_lak: serviceFeeLAK,
+  });
 
   const handleSave = () => {
     const updated: Order = {
       ...order,
+      service_type: serviceType,
       order_date: orderDate,
       customer_name: customerName,
       customer_phone: customerPhone,
       product_name: productName,
       product_url: productUrl,
       product_cost_lak: effectiveProductCostLAK,
+      selling_price_lak: sellingPriceLAK,
       deposit_lak: effectiveDepositLAK,
       delivery_provider: deliveryProvider,
       delivery_branch: deliveryBranch,
       foreign_tracking_no: foreignTrackingNo,
       product_image_url: productImageUrl,
       customer_social_image: customerSocialImage,
-      shipping_cost_lak: Number(shippingCostLAK) || 0,
+      shipping_cost_lak: effectiveShippingCharged,
+      actual_shipping_cost_lak: effectiveActualShipping,
       service_fee_lak: Number(serviceFeeLAK) || 0,
       total_cost_lak: totalCostLAK,
       balance_due_lak: balanceDueLAK,
+      profit_lak: profitLAK,
       weight_kg: Number(weightKg) || 0,
       arrived_date: arrivedDate,
       status: currentStatus,
@@ -97,19 +162,25 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
   const handleCopyArrivalNotice = () => {
     const previewOrder: Order = {
       ...order,
+      service_type: serviceType,
       customer_name: customerName,
       product_name: productName,
       delivery_provider: deliveryProvider,
       delivery_branch: deliveryBranch,
       product_cost_lak: effectiveProductCostLAK,
       deposit_lak: effectiveDepositLAK,
-      shipping_cost_lak: Number(shippingCostLAK) || 0,
+      shipping_cost_lak: effectiveShippingCharged,
       service_fee_lak: Number(serviceFeeLAK) || 0,
       total_cost_lak: totalCostLAK,
       balance_due_lak: balanceDueLAK,
       status: currentStatus,
     };
-    const msgType = currentStatus === 'arrived_laos' ? 'arrived' : currentStatus === 'delivering' ? 'delivering' : 'order_created';
+    const msgType =
+      currentStatus === 'arrived_laos'
+        ? 'arrived'
+        : currentStatus === 'delivering'
+        ? 'delivering'
+        : 'order_created';
     const text = generateCustomerMessage(previewOrder, msgType);
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -159,6 +230,35 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
 
         {/* Modal Body */}
         <div className="p-4 space-y-3.5 overflow-y-auto flex-1">
+          {/* Service Mode Selector Badge */}
+          <div className="flex items-center justify-between p-2 bg-slate-900/90 rounded-xl border border-slate-800">
+            <span className="text-[11px] font-semibold text-slate-400">ປະເພດບໍລິການ:</span>
+            <div className="flex gap-1">
+              <button
+                type="button"
+                onClick={() => setServiceType('BUY_FOR_YOU')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  serviceType === 'BUY_FOR_YOU'
+                    ? 'bg-neon text-black shadow-neon-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                📦 ຮັບສັ່ງເຄື່ອງ (Proxy)
+              </button>
+              <button
+                type="button"
+                onClick={() => setServiceType('PREORDER')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                  serviceType === 'PREORDER'
+                    ? 'bg-neon text-black shadow-neon-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                🏷️ ພຣີອໍເດີ (Retail)
+              </button>
+            </div>
+          </div>
+
           {/* Images Row: Product Photo & Customer Chat Image */}
           <div className="grid grid-cols-2 gap-2.5">
             {/* Product Image Card */}
@@ -252,31 +352,6 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
             ) : (
               /* Extended Edit Form Fields */
               <div className="space-y-2.5 pt-2 border-t border-slate-800 text-xs">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-300">
-                    ຊື່ສິນຄ້າ / ລາຍລະອຽດ
-                  </label>
-                  <input
-                    type="text"
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-300">
-                    🔗 ລິ້ງສັ່ງສິນຄ້າ (URL)
-                  </label>
-                  <input
-                    type="url"
-                    value={productUrl}
-                    onChange={(e) => setProductUrl(e.target.value)}
-                    placeholder="https://..."
-                    className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
-                  />
-                </div>
-
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-slate-300">
@@ -302,6 +377,31 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                       className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
                     />
                   </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-slate-300">
+                    ຊື່ສິນຄ້າ / ລາຍລະອຽດ
+                  </label>
+                  <input
+                    type="text"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                    className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-slate-300">
+                    🔗 ລິ້ງສັ່ງສິນຄ້າ (URL)
+                  </label>
+                  <input
+                    type="url"
+                    value={productUrl}
+                    onChange={(e) => setProductUrl(e.target.value)}
+                    placeholder="https://..."
+                    className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -405,27 +505,74 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
             )}
           </div>
 
-          {/* Primary Input: Shipping Fee in LAK */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-200 flex items-center justify-between">
-              <span>🚚 ຄ່າຂົນສົ່ງມາລາວ (ປ້ອນເປັນເງິນກີບ LAK) *</span>
-              <span className="text-[10px] text-neon font-normal">ຈີນ/ໄທ ➔ ລາວ</span>
-            </label>
-            <div className="relative">
-              <input
-                type="number"
-                min="0"
-                step="1000"
-                value={shippingCostLAK || ''}
-                onChange={(e) => setShippingCostLAK(Number(e.target.value))}
-                placeholder="ເຊັ່ນ: 45000"
-                className="w-full px-3.5 py-2.5 bg-background border border-slate-700 rounded-xl text-base font-bold text-neon focus:outline-none focus:border-neon focus:ring-1 focus:ring-neon"
-                autoFocus
-              />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
-                LAK (ກີບ)
+          {/* Dual Shipping Inputs: Charged to Customer vs Actual Cost */}
+          <div className="p-3 bg-surface rounded-2xl border border-slate-800 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-200">
+                🚚 ຄ່າຂົນສົ່ງມາລາວ (Shipping Fee)
+              </span>
+              <span className="text-[10px] text-neon font-semibold">
+                {serviceType === 'BUY_FOR_YOU' ? 'ຮັບສັ່ງເຄື່ອງ' : 'ພຣີອໍເດີ'}
               </span>
             </div>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              {/* Field 1: Charged to Customer */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-slate-200 flex items-center justify-between">
+                  <span>ຄ່າສົ່ງເກັບລູກຄ້າ *</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="0"
+                    step="1000"
+                    value={shippingCostLAK || ''}
+                    onChange={(e) => setShippingCostLAK(Number(e.target.value))}
+                    placeholder="ເຊັ່ນ: 80000"
+                    className="w-full px-3 py-2 bg-background border border-neon/80 rounded-xl text-sm font-bold text-neon focus:outline-none focus:border-neon focus:ring-1 focus:ring-neon"
+                    autoFocus
+                  />
+                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                    ກີບ
+                  </span>
+                </div>
+              </div>
+
+              {/* Field 2: Actual Cost to Logistics (Admin Only) */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-slate-300 flex items-center justify-between">
+                  <span>ຕົ້ນທຶນສົ່ງຈິງ (ຮ້ານຈ່າຍ)</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="0"
+                    step="1000"
+                    value={actualShippingCostLAK || ''}
+                    onChange={(e) => setActualShippingCostLAK(Number(e.target.value))}
+                    placeholder="ເຊັ່ນ: 50000"
+                    className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-sm font-bold text-slate-200 focus:outline-none focus:border-neon"
+                  />
+                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                    ກີບ
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Live Profit Preview on Shipping */}
+            {effectiveShippingCharged > 0 && effectiveActualShipping > 0 && (
+              <div className="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs">
+                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                  <TrendingUp size={14} />
+                  ກຳໄລສ່ວນຕ່າງຄ່າສົ່ງ:
+                </span>
+                <span className="font-extrabold text-emerald-400">
+                  +{formatLAK(shippingProfitLAK)}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Row: Weight and Date */}
@@ -467,7 +614,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
           {/* Calculated Summary Box */}
           <div className="p-3.5 rounded-2xl bg-neon/5 border border-neon/30 space-y-2">
             <div className="flex justify-between text-xs text-slate-300">
-              <span>ຕົ້ນທຶນລວມສຸດທິ (Total):</span>
+              <span>ຍອດລວມເກັບລູກຄ້າ (Total):</span>
               <span className="font-bold text-slate-100">{formatLAK(totalCostLAK)}</span>
             </div>
             <div className="flex justify-between text-xs text-slate-300">
@@ -478,6 +625,17 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
               <span className="text-xs font-bold text-neon">🔥 ຍອດ COD ທີ່ຕ້ອງເກັບ:</span>
               <span className="text-lg font-black text-neon neon-glow-text">
                 {formatLAK(balanceDueLAK)}
+              </span>
+            </div>
+
+            {/* Shop Profit Summary (Admin only view) */}
+            <div className="mt-2 pt-2 border-t border-slate-800 flex justify-between items-center text-xs">
+              <span className="text-slate-400 flex items-center gap-1 font-semibold">
+                <Sparkles size={13} className="text-emerald-400" />
+                ກຳໄລສຸດທິຂອງຮ້ານ (Profit):
+              </span>
+              <span className="font-bold text-emerald-400">
+                +{formatLAK(profitLAK)}
               </span>
             </div>
           </div>
@@ -504,7 +662,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
             className="flex-1 py-2.5 px-3 rounded-2xl neon-button text-xs font-bold flex items-center justify-center gap-1.5"
           >
             <Check size={16} />
-            ບັນທຶກຮອດລາວ
+            ບັນທຶກຂໍ້ມູນ
           </button>
         </div>
       </div>
@@ -516,7 +674,11 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
           className="fixed inset-0 z-60 bg-black/95 flex items-center justify-center p-4 cursor-pointer"
         >
           <div className="relative max-w-lg max-h-[85vh] rounded-2xl overflow-hidden border border-slate-700">
-            <img src={previewImage} alt="Fullscreen Preview" className="w-full h-full object-contain" />
+            <img
+              src={previewImage}
+              alt="Fullscreen Preview"
+              className="w-full h-full object-contain"
+            />
             <button
               onClick={() => setPreviewImage(null)}
               className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/80 text-white flex items-center justify-center"
