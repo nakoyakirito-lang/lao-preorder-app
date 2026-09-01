@@ -39,7 +39,8 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
 
-  const handleCopyMessage = () => {
+  const handleCopyMessage = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const msgType =
       order.status === 'arrived_laos'
         ? 'arrived'
@@ -54,12 +55,19 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
 
   const isChina = order.route === 'CHINA_LAOS';
 
+  const handleCardClick = () => {
+    if (onCheckIn) {
+      onCheckIn(order);
+    }
+  };
+
   return (
     <div
-      className={`relative rounded-2xl bg-surface border transition-all overflow-hidden ${
+      onClick={handleCardClick}
+      className={`relative rounded-2xl bg-surface border transition-all overflow-hidden cursor-pointer group ${
         selected
           ? 'border-neon ring-1 ring-neon shadow-neon-sm bg-surface'
-          : 'border-slate-800/90 hover:border-slate-700'
+          : 'border-slate-800/90 hover:border-neon/60 hover:shadow-neon-sm'
       }`}
     >
       {/* Header Info Bar */}
@@ -69,6 +77,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
             <input
               type="checkbox"
               checked={selected}
+              onClick={(e) => e.stopPropagation()}
               onChange={() => onSelect && onSelect(order.id)}
               className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-neon focus:ring-neon cursor-pointer accent-neon"
             />
@@ -88,7 +97,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
         </div>
 
         {/* Interactive Status Changer Dropdown */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
           <select
             value={order.status}
             onChange={(e) => {
@@ -112,7 +121,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
         </div>
       </div>
 
-      {/* Main Card Body */}
+      {/* Main Card Body (Clickable to view/edit) */}
       <div className="p-3.5 flex gap-3">
         {/* Product / Social Image */}
         <div className="relative w-20 h-20 rounded-xl bg-slate-800/80 border border-slate-700/80 overflow-hidden flex-shrink-0 flex items-center justify-center">
@@ -120,7 +129,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
             <img
               src={order.product_image_url}
               alt={order.product_name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
             />
           ) : (
             <Tag size={24} className="text-slate-500" />
@@ -139,7 +148,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
 
         {/* Info & Customer Details */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-1">
+          <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-1 group-hover:text-neon transition-colors">
             {order.product_name}
           </h3>
 
@@ -186,6 +195,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
         <div className="flex items-center gap-1.5">
           {/* 1-Click Copy Message */}
           <button
+            type="button"
             onClick={handleCopyMessage}
             className={`flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all ${
               copied
@@ -203,6 +213,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
               href={`https://wa.me/${order.customer_phone.replace(/[^0-9]/g, '')}`}
               target="_blank"
               rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
               className="flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
             >
               <MessageCircle size={13} />
@@ -216,6 +227,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
               href={order.product_url}
               target="_blank"
               rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
               className="flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/30 hover:bg-sky-500/20"
               title="ເບິ່ງລິ້ງສັ່ງສິນຄ້າ"
             >
@@ -228,7 +240,11 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
         <div className="flex items-center gap-1.5">
           {order.status !== 'arrived_laos' && order.status !== 'completed' && onCheckIn && (
             <button
-              onClick={() => onCheckIn(order)}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCheckIn(order);
+              }}
               className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-neon text-black hover:bg-neon-400 shadow-neon-sm transition-all"
             >
               📥 ເຄື່ອງຮອດລາວ
@@ -237,7 +253,9 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
 
           <Link
             href={`/track/${order.tracking_code}`}
+            onClick={(e) => e.stopPropagation()}
             className="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-colors"
+            title="ເບິ່ງໜ້າຕິດຕາມ"
           >
             <ChevronRight size={16} />
           </Link>
