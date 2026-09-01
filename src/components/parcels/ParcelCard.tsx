@@ -85,6 +85,8 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
           <span className="text-xs font-mono font-bold text-slate-300">
             {order.tracking_code}
           </span>
+        </div>
+
         {/* Interactive Status Changer Dropdown */}
         <div className="flex items-center gap-1">
           <select
