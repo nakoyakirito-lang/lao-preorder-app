@@ -20,6 +20,7 @@ export default function PrintPage() {
   const [filterRoute, setFilterRoute] = useState<'ALL' | 'CHINA_LAOS' | 'THAI_LAOS'>('ALL');
   const [filterStatus, setFilterStatus] = useState<string>('arrived_laos');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -247,16 +248,26 @@ export default function PrintPage() {
           })}
         </div>
 
-        {/* Live Print Preview Section */}
-        <div className="pt-4 border-t border-slate-800">
-          <h2 className="text-xs font-bold text-slate-300 mb-2">
-            👁️ ຕົວຢ່າງໃບບິນກ່ອນພິມ ({selectedOrdersToPrint.length} ໃບ):
-          </h2>
+        {/* Optional Live Print Preview Toggle */}
+        <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-300">
+            ໃບບິນທີ່ເລືອກ ({selectedOrdersToPrint.length} ໃບ)
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowPreview(!showPreview)}
+            className="text-xs font-bold text-neon hover:underline py-1 px-2.5 rounded-lg bg-surface border border-slate-700 flex items-center gap-1 transition-all"
+          >
+            {showPreview ? '🙈 ເຊື່ອງຕົວຢ່າງ' : '👁️ ເບິ່ງຕົວຢ່າງໃບບິນ'}
+          </button>
         </div>
       </div>
 
-      {/* Printable Area - Rendered cleanly on screen and on print */}
-      <div id="printable-area" className="p-2 space-y-4">
+      {/* Printable Area - Hidden on screen when collapsed, ALWAYS active on window.print() */}
+      <div
+        id="printable-area"
+        className={`${showPreview ? 'block' : 'hidden'} print:block p-2 space-y-4`}
+      >
         {selectedOrdersToPrint.length === 0 ? (
           <div className="text-center py-8 text-slate-500 text-xs no-print">
             ກະລຸນາຕິກເລືອກພັດສະດຸດ້ານເທິງເພື່ອພິມບິນ
