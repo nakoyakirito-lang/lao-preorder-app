@@ -16,17 +16,18 @@ export default function PrintPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [settings, setSettings] = useState<ShopSettings>(DEFAULT_SHOP_SETTINGS);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [paperWidth, setPaperWidth] = useState<'80mm' | '100mm'>('100mm');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterRoute, setFilterRoute] = useState<'ALL' | 'CHINA_LAOS' | 'THAI_LAOS'>('ALL');
+  const [filterStatus, setFilterStatus] = useState<string>('arrived_laos');
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([getOrders(), getShopSettings()]).then(([ordData, settsData]) => {
       setOrders(ordData);
       setSettings(settsData);
-      // Auto-select arrived or active orders
+      // Auto-select arrived orders by default
       const defaultSelected = ordData
-        .filter((o) => o.status === 'arrived_laos' || o.status === 'ordered')
+        .filter((o) => o.status === 'arrived_laos')
         .map((o) => o.id);
       setSelectedIds(defaultSelected);
       setLoading(false);
@@ -39,6 +40,19 @@ export default function PrintPage() {
     );
   };
 
+  const filteredOrders = orders.filter((o) => {
+    if (filterRoute !== 'ALL' && o.route !== filterRoute) return false;
+    if (filterStatus !== 'ALL' && o.status !== filterStatus) return false;
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      o.tracking_code.toLowerCase().includes(q) ||
+      o.customer_name.toLowerCase().includes(q) ||
+      o.customer_phone.includes(q) ||
+      o.product_name.toLowerCase().includes(q)
+    );
+  });
+
   const handleSelectAll = () => {
     if (selectedIds.length === filteredOrders.length) {
       setSelectedIds([]);
@@ -50,11 +64,6 @@ export default function PrintPage() {
   const handlePrint = () => {
     window.print();
   };
-
-  const filteredOrders = orders.filter((o) => {
-    if (filterStatus === 'all') return true;
-    return o.status === filterStatus;
-  });
 
   const selectedOrdersToPrint = orders.filter((o) => selectedIds.includes(o.id));
 
@@ -97,45 +106,85 @@ export default function PrintPage() {
 
       {/* Control Panel (No Print) */}
       <div className="p-4 space-y-3 no-print">
-        {/* Paper Size & Filter Settings */}
-        <div className="p-3 bg-surface rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs text-slate-300 font-semibold">ຂະໜາດເຈ້ຍ:</span>
-            <div className="flex bg-background rounded-lg p-0.5 border border-slate-700">
-              <button
-                onClick={() => setPaperWidth('100mm')}
-                className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
-                  paperWidth === '100mm'
-                    ? 'bg-neon text-black shadow-neon-sm'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                100mm (ສະຕິກເກີ)
-              </button>
-              <button
-                onClick={() => setPaperWidth('80mm')}
-                className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
-                  paperWidth === '80mm'
-                    ? 'bg-neon text-black shadow-neon-sm'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                80mm (ສະລິບ)
-              </button>
-            </div>
-          </div>
+        {/* Search Bar */}
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="ຄົ້ນຫາເລກພັດສະດຸ, ເບີໂທ, ຊື່ລູກຄ້າທີ່ຈະພິມ..."
+          className="w-full px-3.5 py-2 bg-surface border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:border-neon focus:outline-none"
+        />
 
-          <button
-            onClick={handleSelectAll}
-            className="text-xs font-bold text-neon hover:underline flex items-center gap-1"
-          >
-            {selectedIds.length === filteredOrders.length ? (
-              <CheckSquare size={15} />
-            ) : (
-              <Square size={15} />
-            )}
-            {selectedIds.length === filteredOrders.length ? 'ຍົກເລີກທັງໝົດ' : 'ເລືອກທັງໝົດ'}
-          </button>
+        {/* Status Filter Scrollbar */}
+        <div className="space-y-1">
+          <label className="text-[11px] font-bold text-slate-300">
+            🔍 ຟິວເຕີຕາມສະຖານະພັດສະດຸ (Status Filter):
+          </label>
+          <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+            {[
+              { id: 'ALL', label: 'ທັງໝົດ' },
+              { id: 'arrived_laos', label: '🏢 ຮອດລາວແລ້ວ' },
+              { id: 'ordered', label: '📦 ສັ່ງຊື້ແລ້ວ' },
+              { id: 'in_transit', label: '🚚 ກຳລັງມາ' },
+              { id: 'delivering', label: '🛵 ກຳລັງຈັດສົ່ງ' },
+              { id: 'completed', label: '✅ ສຳເລັດ' },
+            ].map((st) => (
+              <button
+                key={st.id}
+                onClick={() => setFilterStatus(st.id)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  filterStatus === st.id
+                    ? 'bg-neon text-black shadow-neon-sm font-extrabold'
+                    : 'bg-surface border border-slate-800 text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {st.label} ({orders.filter((o) => st.id === 'ALL' || o.status === st.id).length})
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Route Filter & Paper Size Controls */}
+        <div className="p-3 bg-surface rounded-2xl border border-slate-800 space-y-2.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] text-slate-300 font-semibold">ຂະໜາດເຈ້ຍ:</span>
+              <div className="flex bg-background rounded-lg p-0.5 border border-slate-700">
+                <button
+                  onClick={() => setPaperWidth('100mm')}
+                  className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
+                    paperWidth === '100mm'
+                      ? 'bg-neon text-black shadow-neon-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  100mm (ສະຕິກເກີ)
+                </button>
+                <button
+                  onClick={() => setPaperWidth('80mm')}
+                  className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
+                    paperWidth === '80mm'
+                      ? 'bg-neon text-black shadow-neon-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  80mm (ສະລິບ)
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={handleSelectAll}
+              className="text-xs font-bold text-neon hover:underline flex items-center gap-1"
+            >
+              {selectedIds.length === filteredOrders.length && filteredOrders.length > 0 ? (
+                <CheckSquare size={15} />
+              ) : (
+                <Square size={15} />
+              )}
+              {selectedIds.length === filteredOrders.length && filteredOrders.length > 0 ? 'ຍົກເລີກ' : 'ເລືອກທັງໝົດ'}
+            </button>
+          </div>
         </div>
 
         {/* Parcel Selector Checklist */}
