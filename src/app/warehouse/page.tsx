@@ -7,10 +7,12 @@ import { ParcelCard } from '@/components/parcels/ParcelCard';
 import { CheckInModal } from '@/components/warehouse/CheckInModal';
 import { Order } from '@/types/database';
 import { getOrders, saveOrder } from '@/lib/storage';
+import { useRouter } from 'next/navigation';
 import { Warehouse, Search, CheckCircle2, ArrowLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
 
 export default function WarehousePage() {
+  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTab, setFilterTab] = useState<'pending_shipping' | 'arrived'>('pending_shipping');
@@ -57,12 +59,14 @@ export default function WarehousePage() {
       {/* Top Bar */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <Link
-            href="/"
-            className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon"
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
+            title="ຍ້ອນກັບ"
           >
             <ArrowLeft size={16} />
-          </Link>
+          </button>
           <div>
             <h1 className="text-base font-bold text-slate-100 flex items-center gap-1.5">
               <Warehouse size={18} className="text-neon" />

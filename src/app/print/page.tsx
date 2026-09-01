@@ -7,10 +7,12 @@ import { ThermalBill } from '@/components/print/ThermalBill';
 import { Order, ShopSettings } from '@/types/database';
 import { getOrders, getShopSettings, DEFAULT_SHOP_SETTINGS } from '@/lib/storage';
 import { formatLAK } from '@/lib/calculations';
+import { useRouter } from 'next/navigation';
 import { Printer, ArrowLeft, CheckSquare, Square, SlidersHorizontal, Check } from 'lucide-react';
 import Link from 'next/link';
 
 export default function PrintPage() {
+  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [settings, setSettings] = useState<ShopSettings>(DEFAULT_SHOP_SETTINGS);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -61,12 +63,14 @@ export default function PrintPage() {
       {/* Top Header (Hidden when printing) */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between no-print">
         <div className="flex items-center gap-2.5">
-          <Link
-            href="/"
-            className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon"
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
+            title="ຍ້ອນກັບ"
           >
             <ArrowLeft size={16} />
-          </Link>
+          </button>
           <div>
             <h1 className="text-base font-bold text-slate-100 flex items-center gap-1.5">
               <Printer size={18} className="text-neon" />

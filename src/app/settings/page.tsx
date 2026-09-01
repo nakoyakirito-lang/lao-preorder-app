@@ -15,6 +15,7 @@ import {
 } from '@/lib/storage';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { formatLAK } from '@/lib/calculations';
+import { useRouter } from 'next/navigation';
 import {
   Sliders,
   ArrowLeft,
@@ -29,6 +30,7 @@ import {
 import Link from 'next/link';
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [rates, setRates] = useState<ExchangeRate[]>(DEFAULT_EXCHANGE_RATES);
   const [settings, setSettings] = useState<ShopSettings>(DEFAULT_SHOP_SETTINGS);
   const [cnyRate, setCnyRate] = useState<number>(3200);
@@ -77,12 +79,14 @@ export default function SettingsPage() {
       {/* Top Bar */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <Link
-            href="/"
-            className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon"
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
+            title="ຍ້ອນກັບ"
           >
             <ArrowLeft size={16} />
-          </Link>
+          </button>
           <div>
             <h1 className="text-base font-bold text-slate-100 flex items-center gap-1.5">
               <Sliders size={18} className="text-neon" />

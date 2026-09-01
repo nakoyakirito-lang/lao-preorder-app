@@ -7,6 +7,7 @@ import { getOrderByTrackingCode, getShopSettings, DEFAULT_SHOP_SETTINGS } from '
 import { TrackingTimeline } from '@/components/track/TrackingTimeline';
 import { StatusBadge } from '@/components/parcels/StatusBadge';
 import { formatLAK } from '@/lib/calculations';
+import { useRouter } from 'next/navigation';
 import {
   Package,
   MapPin,
@@ -18,10 +19,12 @@ import {
   ShieldCheck,
   Check,
   Copy,
+  ArrowLeft,
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function PublicTrackingPage() {
+  const router = useRouter();
   const params = useParams();
   const trackingCode = (params?.code as string) || '';
 
@@ -76,12 +79,12 @@ export default function PublicTrackingPage() {
         <p className="text-xs text-slate-400 mt-1 max-w-xs">
           ກະລຸນາກວດສອບເລກຕິດຕາມ <span className="font-mono text-neon">{trackingCode}</span> ຄືນໃໝ່
         </p>
-        <Link
-          href="/"
-          className="mt-4 px-4 py-2 rounded-xl bg-surface border border-slate-700 text-xs font-bold text-slate-200"
+        <button
+          onClick={() => router.back()}
+          className="mt-4 px-4 py-2 rounded-xl bg-surface border border-slate-700 text-xs font-bold text-slate-200 hover:text-neon"
         >
-          ກັບສູ່ໜ້າຫຼັກ
-        </Link>
+          ← ກັບຄືນ
+        </button>
       </div>
     );
   }
@@ -90,18 +93,25 @@ export default function PublicTrackingPage() {
 
   return (
     <main className="min-h-screen bg-background text-slate-100 flex flex-col pb-12">
-      {/* Brand Header */}
-      <div className="bg-slate-900/90 border-b border-slate-800 p-4 text-center">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neon/10 border border-neon/30 text-neon text-[10px] font-bold mb-1">
-          <ShieldCheck size={12} />
-          ລະບົບກວດສອບສະຖານະພັດສະດຸ
+      {/* Brand Header with Back Button */}
+      <div className="bg-slate-900/90 border-b border-slate-800 p-4 relative flex items-center justify-between">
+        <button
+          onClick={() => router.back()}
+          className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
+          title="ຍ້ອນກັບ"
+        >
+          <ArrowLeft size={16} />
+        </button>
+
+        <div className="text-center flex-1 pr-8">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neon/10 border border-neon/30 text-neon text-[10px] font-bold mb-0.5">
+            <ShieldCheck size={12} />
+            ລະບົບກວດສອບສະຖານະພັດສະດຸ
+          </div>
+          <h1 className="text-sm sm:text-base font-black text-slate-100 uppercase tracking-tight">
+            {settings.shop_name}
+          </h1>
         </div>
-        <h1 className="text-base font-black text-slate-100 uppercase tracking-tight">
-          {settings.shop_name}
-        </h1>
-        <p className="text-[11px] text-slate-400">
-          ຕິດຕໍ່ສອບຖາມ: {settings.phone}
-        </p>
       </div>
 
       <div className="p-4 space-y-4">
