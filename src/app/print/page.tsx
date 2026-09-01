@@ -16,6 +16,7 @@ export default function PrintPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [settings, setSettings] = useState<ShopSettings>(DEFAULT_SHOP_SETTINGS);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [paperWidth, setPaperWidth] = useState<'80mm' | '100mm'>('100mm');
   const [filterRoute, setFilterRoute] = useState<'ALL' | 'CHINA_LAOS' | 'THAI_LAOS'>('ALL');
   const [filterStatus, setFilterStatus] = useState<string>('arrived_laos');
   const [searchQuery, setSearchQuery] = useState('');
