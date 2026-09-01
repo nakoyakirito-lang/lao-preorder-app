@@ -15,6 +15,7 @@ export default function ParcelsPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedServiceType, setSelectedServiceType] = useState<'ALL' | 'BUY_FOR_YOU' | 'PREORDER'>('ALL');
   const [selectedRoute, setSelectedRoute] = useState<'ALL' | 'CHINA_LAOS' | 'THAI_LAOS'>('ALL');
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
   const [activeCheckInOrder, setActiveCheckInOrder] = useState<Order | null>(null);
@@ -47,6 +48,8 @@ export default function ParcelsPage() {
   };
 
   const filteredOrders = orders.filter((o) => {
+    // Service Type filter
+    if (selectedServiceType !== 'ALL' && (o.service_type || 'BUY_FOR_YOU') !== selectedServiceType) return false;
     // Route filter
     if (selectedRoute !== 'ALL' && o.route !== selectedRoute) return false;
     // Status filter
@@ -102,6 +105,43 @@ export default function ParcelsPage() {
           placeholder="ຄົ້ນຫາເລກພັດສະດຸ, ເບີໂທ, ຊື່ລູກຄ້າ..."
           className="w-full px-3.5 py-2.5 bg-surface border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:border-neon focus:outline-none"
         />
+
+        {/* Service Type Filter Tabs */}
+        <div className="flex gap-1.5 p-1 bg-surface rounded-2xl border border-slate-800">
+          <button
+            type="button"
+            onClick={() => setSelectedServiceType('ALL')}
+            className={`flex-1 py-1.5 px-2 text-xs font-bold rounded-xl transition-all ${
+              selectedServiceType === 'ALL'
+                ? 'bg-neon text-black shadow-neon-sm'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            ທັງໝົດ
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedServiceType('BUY_FOR_YOU')}
+            className={`flex-1 py-1.5 px-2 text-xs font-bold rounded-xl transition-all ${
+              selectedServiceType === 'BUY_FOR_YOU'
+                ? 'bg-neon text-black shadow-neon-sm'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            📦 ຮັບສັ່ງເຄື່ອງ
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedServiceType('PREORDER')}
+            className={`flex-1 py-1.5 px-2 text-xs font-bold rounded-xl transition-all ${
+              selectedServiceType === 'PREORDER'
+                ? 'bg-neon text-black shadow-neon-sm'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            🏷️ ພຣີອໍເດີ
+          </button>
+        </div>
 
         {/* Route Filter Pills */}
         <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
