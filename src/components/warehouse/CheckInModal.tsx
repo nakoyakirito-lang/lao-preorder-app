@@ -33,6 +33,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
   onSave,
 }) => {
   // Shipping & Arrival State
+  const [currentStatus, setCurrentStatus] = useState<Order['status']>(order.status || 'arrived_laos');
   const [shippingCostLAK, setShippingCostLAK] = useState<number>(order.shipping_cost_lak || 0);
   const [serviceFeeLAK, setServiceFeeLAK] = useState<number>(order.service_fee_lak || 0);
   const [weightKg, setWeightKg] = useState<number>(order.weight_kg || 1);
@@ -86,7 +87,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
       balance_due_lak: balanceDueLAK,
       weight_kg: Number(weightKg) || 0,
       arrived_date: arrivedDate,
-      status: 'arrived_laos',
+      status: currentStatus,
       notes: notes,
       updated_at: new Date().toISOString(),
     };
@@ -106,9 +107,10 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
       service_fee_lak: Number(serviceFeeLAK) || 0,
       total_cost_lak: totalCostLAK,
       balance_due_lak: balanceDueLAK,
-      status: 'arrived_laos',
+      status: currentStatus,
     };
-    const text = generateCustomerMessage(previewOrder, 'arrived');
+    const msgType = currentStatus === 'arrived_laos' ? 'arrived' : currentStatus === 'delivering' ? 'delivering' : 'order_created';
+    const text = generateCustomerMessage(previewOrder, msgType);
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -125,17 +127,34 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-100">
-                ເຊັກອິນເຄື່ອງຮອດສາງລາວ 🇱🇦
+                ລາຍລະອຽດ & ເຊັກອິນພັດສະດຸ
               </h3>
               <p className="text-[11px] font-mono text-neon">{order.tracking_code}</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 flex items-center justify-center"
-          >
-            <X size={16} />
-          </button>
+
+          <div className="flex items-center gap-2">
+            {/* Direct Status Selector in Modal Header */}
+            <select
+              value={currentStatus}
+              onChange={(e) => setCurrentStatus(e.target.value as Order['status'])}
+              className="text-xs font-bold py-1 px-2 rounded-xl bg-background border border-neon text-neon focus:outline-none cursor-pointer shadow-neon-sm"
+            >
+              <option value="ordered">📦 ສັ່ງຊື້ແລ້ວ</option>
+              <option value="in_transit">🚚 ກຳລັງມາລາວ</option>
+              <option value="arrived_laos">🏢 ຮອດສາງລາວ</option>
+              <option value="delivering">🛵 ກຳລັງຈັດສົ່ງ</option>
+              <option value="completed">✅ ສຳເລັດ/ຈ່າຍແລ້ວ</option>
+              <option value="cancelled">❌ ຍົກເລີກ/ຕີກັບ</option>
+            </select>
+
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 flex items-center justify-center"
+            >
+              <X size={16} />
+            </button>
+          </div>
         </div>
 
         {/* Modal Body */}
