@@ -27,6 +27,7 @@ import {
   TrendingUp,
   Boxes,
   HelpCircle,
+  Truck,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -58,6 +59,8 @@ function NewOrderForm() {
   const [productUrl, setProductUrl] = useState('');
   const [productImageUrl, setProductImageUrl] = useState('');
   const [foreignTrackingNo, setForeignTrackingNo] = useState('');
+  const [shippingCostLAK, setShippingCostLAK] = useState<number | ''>('');
+  const [actualShippingCostLAK, setActualShippingCostLAK] = useState<number | ''>('');
   const [depositLAK, setDepositLAK] = useState<number | ''>('');
   const [notes, setNotes] = useState('');
 
@@ -90,6 +93,8 @@ function NewOrderForm() {
   const originCurrency: OriginCurrency = route === 'CHINA_LAOS' ? 'CNY' : 'THB';
   const effectiveRate = Number(customRate) || (route === 'CHINA_LAOS' ? 3200 : 640);
   const currentDepositLAK = Number(depositLAK) || 0;
+  const currentShippingLAK = Number(shippingCostLAK) || 0;
+  const currentActualShippingLAK = Number(actualShippingCostLAK) || 0;
   const isProxy = serviceType === 'BUY_FOR_YOU';
 
   // Mode 1 Product Cost: directly in LAK or from (¥/฿ * Rate)
@@ -98,15 +103,26 @@ function NewOrderForm() {
       ? Number(directProxyCostLAK) || 0
       : calculateProductCostLAK(Number(originCost) || 0, effectiveRate);
 
-  const proxyInitialBalanceDueLAK = calculateBalanceDueLAK(proxyProductCostLAK, currentDepositLAK);
+  const proxyTotalCostLAK = proxyProductCostLAK + currentShippingLAK;
+  const proxyInitialBalanceDueLAK = calculateBalanceDueLAK(proxyTotalCostLAK, currentDepositLAK);
+  const proxyShippingProfitLAK =
+    currentShippingLAK > currentActualShippingLAK && currentActualShippingLAK > 0
+      ? currentShippingLAK - currentActualShippingLAK
+      : 0;
 
   // Mode 2 Calculations (Direct Selling Price in LAK)
   const retailSellingPriceLAK = Number(sellingPriceLAK) || 0;
-  const retailInitialBalanceDueLAK = calculateBalanceDueLAK(retailSellingPriceLAK, currentDepositLAK);
-  const retailProfitLAK =
+  const retailTotalCostLAK = retailSellingPriceLAK + currentShippingLAK;
+  const retailInitialBalanceDueLAK = calculateBalanceDueLAK(retailTotalCostLAK, currentDepositLAK);
+  const retailProductProfitLAK =
     Number(sellingPriceLAK) > 0 && Number(internalCostLAK) > 0
       ? Math.max(0, Number(sellingPriceLAK) - Number(internalCostLAK))
       : 0;
+  const retailShippingProfitLAK =
+    currentShippingLAK > currentActualShippingLAK && currentActualShippingLAK > 0
+      ? currentShippingLAK - currentActualShippingLAK
+      : 0;
+  const retailProfitLAK = retailProductProfitLAK + retailShippingProfitLAK;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,13 +170,13 @@ function NewOrderForm() {
       exchange_rate: isProxy ? effectiveRate : 0,
       product_cost_lak: isProxy ? proxyProductCostLAK : (Number(internalCostLAK) || 0),
       selling_price_lak: !isProxy ? retailSellingPriceLAK : undefined,
-      shipping_cost_lak: 0,
-      actual_shipping_cost_lak: 0,
+      shipping_cost_lak: currentShippingLAK,
+      actual_shipping_cost_lak: currentActualShippingLAK,
       service_fee_lak: 0,
-      total_cost_lak: isProxy ? proxyProductCostLAK : retailSellingPriceLAK,
+      total_cost_lak: isProxy ? proxyTotalCostLAK : retailTotalCostLAK,
       deposit_lak: currentDepositLAK,
       balance_due_lak: isProxy ? proxyInitialBalanceDueLAK : retailInitialBalanceDueLAK,
-      profit_lak: isProxy ? 0 : retailProfitLAK,
+      profit_lak: isProxy ? proxyShippingProfitLAK : retailProfitLAK,
       status: 'ordered',
       notes,
       created_at: new Date().toISOString(),
@@ -355,6 +371,74 @@ function NewOrderForm() {
                 </div>
               </div>
 
+              {/* Shipping Fee Input (Optional when creating, can update at warehouse) */}
+              <div className="p-3 bg-background border border-slate-700 rounded-2xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                    <Truck size={15} className="text-neon" />
+                    🚚 ຄ່າຂົນສົ່ງມາລາວ (Shipping Fee)
+                  </label>
+                  <span className="text-[10px] text-slate-400">ຖ້າຍັງບໍ່ຮູ້ ປະວ່າງໄວ້ໄດ້</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold text-neon">
+                      ຄ່າສົ່ງເກັບລູກຄ້າ (LAK)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="0"
+                        step="1000"
+                        value={shippingCostLAK}
+                        onChange={(e) =>
+                          setShippingCostLAK(e.target.value ? Number(e.target.value) : '')
+                        }
+                        placeholder="ເຊັ່ນ: 80000"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl text-xs font-bold text-slate-100 focus:border-neon focus:outline-none"
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                        ກີບ
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-slate-300">
+                      ຕົ້ນທຶນສົ່ງຈິງ (LAK)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="0"
+                        step="1000"
+                        value={actualShippingCostLAK}
+                        onChange={(e) =>
+                          setActualShippingCostLAK(
+                            e.target.value ? Number(e.target.value) : ''
+                          )
+                        }
+                        placeholder="ເຊັ່ນ: 50000"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl text-xs font-bold text-slate-100 focus:border-neon focus:outline-none"
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                        ກີບ
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {proxyShippingProfitLAK > 0 && (
+                  <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs">
+                    <span className="text-emerald-400 font-bold">✨ ກຳໄລຄ່າສົ່ງ:</span>
+                    <span className="text-emerald-400 font-black">
+                      +{formatLAK(proxyShippingProfitLAK)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-slate-300">
                   ເລກແທຣັກກິ້ງຕົ້ນທາງ (ຈີນ/ໄທ ຖ້າມີ)
@@ -484,9 +568,11 @@ function NewOrderForm() {
                     {formatLAK(proxyProductCostLAK)}
                   </span>
                 </div>
-                <div className="flex justify-between text-xs text-slate-400">
+                <div className="flex justify-between text-xs text-slate-300">
                   <span>🚚 ຄ່າຂົນສົ່ງມາລາວ:</span>
-                  <span className="text-slate-400">ປ້ອນເມື່ອຮອດສາງ (ບວກກຳໄລໄດ້)</span>
+                  <span className="font-bold text-slate-100">
+                    {currentShippingLAK > 0 ? formatLAK(currentShippingLAK) : '0 ກີບ (ປ້ອນເມື່ອຮອດສາງ)'}
+                  </span>
                 </div>
                 <div className="flex justify-between text-xs text-slate-300">
                   <span>💳 ມັດຈຳແລ້ວ:</span>
@@ -495,7 +581,7 @@ function NewOrderForm() {
                   </span>
                 </div>
                 <div className="pt-2 border-t border-neon/20 flex justify-between items-center">
-                  <span className="text-xs font-bold text-neon">ຍອດຄ້າງຊຳລະເບື້ອງຕົ້ນ:</span>
+                  <span className="text-xs font-bold text-neon">ຍອດ COD ທີ່ຕ້ອງເກັບປາຍທາງ:</span>
                   <span className="text-base font-black text-neon neon-glow-text">
                     {formatLAK(proxyInitialBalanceDueLAK)}
                   </span>
@@ -625,18 +711,77 @@ function NewOrderForm() {
                 </div>
               </div>
 
+              {/* Shipping Fee Input for Preorder Retail */}
+              <div className="p-3 bg-background border border-slate-700 rounded-2xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                    <Truck size={15} className="text-amber-400" />
+                    🚚 ຄ່າຂົນສົ່ງມາລາວ (Shipping Fee)
+                  </label>
+                  <span className="text-[10px] text-slate-400">ຖ້າຍັງບໍ່ຮູ້ ປະວ່າງໄວ້ໄດ້</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold text-amber-400">
+                      ຄ່າສົ່ງເກັບລູກຄ້າ (LAK)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="0"
+                        step="1000"
+                        value={shippingCostLAK}
+                        onChange={(e) =>
+                          setShippingCostLAK(e.target.value ? Number(e.target.value) : '')
+                        }
+                        placeholder="ເຊັ່ນ: 30000"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl text-xs font-bold text-slate-100 focus:border-amber-400 focus:outline-none"
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                        ກີບ
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-slate-300">
+                      ຕົ້ນທຶນສົ່ງຈິງ (LAK)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="0"
+                        step="1000"
+                        value={actualShippingCostLAK}
+                        onChange={(e) =>
+                          setActualShippingCostLAK(
+                            e.target.value ? Number(e.target.value) : ''
+                          )
+                        }
+                        placeholder="ເຊັ່ນ: 20000"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-xl text-xs font-bold text-slate-100 focus:border-neon focus:outline-none"
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                        ກີບ
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Retail COD Balance Preview */}
               <div className="p-3 bg-neon/5 rounded-xl border border-neon/30 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] text-slate-400 block">
-                    ຍອດ COD ທີ່ເຫຼືອເກັບລູກຄ້າ (ລາຄາຂາຍ - ມັດຈຳ)
+                    ຍອດ COD ທີ່ເຫຼືອເກັບລູກຄ້າ (ລາຄາຂາຍ + ຄ່າສົ່ງ - ມັດຈຳ)
                   </span>
                   <span className="text-base font-black text-neon neon-glow-text">
                     {formatLAK(retailInitialBalanceDueLAK)}
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-400">
-                  (ຄ່າສົ່ງຈະບວກເພີ່ມຕອນຮອດລາວ)
+                  {currentShippingLAK > 0 ? `(ລວມຄ່າສົ່ງ ${formatLAK(currentShippingLAK)})` : '(ຍັງບໍ່ລວມຄ່າສົ່ງ)'}
                 </span>
               </div>
 
