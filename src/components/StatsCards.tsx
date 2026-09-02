@@ -21,29 +21,28 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ orders }) => {
 
   return (
     <div className="px-4 py-2">
-      {/* Banner / Promotion Card */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-neutral-900 via-slate-900 to-black border border-slate-800 p-4 mb-3 shadow-lg">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-neon/10 rounded-full blur-2xl pointer-events-none"></div>
+      {/* Banner / Total COD Card */}
+      <div className="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 p-4 mb-3 shadow-md">
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-1 text-neon text-[11px] font-bold tracking-wide uppercase mb-1">
-              <span className="w-2 h-2 rounded-full bg-neon animate-ping"></span>
+            <div className="flex items-center gap-1.5 text-neutral-400 text-[11px] font-bold tracking-wide uppercase mb-1">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
               ຍອດເກັບເງິນປາຍທາງ (COD ທີ່ຕ້ອງເກັບ)
             </div>
-            <div className="text-2xl font-black text-neon neon-glow-text tracking-tight">
+            <div className="text-2xl font-black text-white tracking-tight">
               {formatLAK(totalBalanceDue)}
             </div>
-            <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-400">
+            <div className="flex items-center gap-3 mt-1 text-[11px] text-neutral-400">
               <span>ລໍຖ້າຈັດສົ່ງ {arrivedLaosCount} ລາຍການ</span>
               {totalProfit > 0 && (
-                <span className="text-emerald-400 font-bold flex items-center gap-0.5">
-                  <Sparkles size={12} />
+                <span className="text-white font-bold flex items-center gap-0.5 bg-neutral-800 px-2 py-0.5 rounded-md border border-neutral-700">
+                  <Sparkles size={12} className="text-amber-400" />
                   ກຳໄລສະສົມ: +{formatLAK(totalProfit)}
                 </span>
               )}
             </div>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-neon/10 border border-neon/30 flex items-center justify-center text-neon shadow-neon-sm">
+          <div className="w-12 h-12 rounded-2xl bg-white text-black flex items-center justify-center font-black shadow-md">
             <DollarSign size={24} />
           </div>
         </div>
@@ -51,28 +50,28 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ orders }) => {
 
       {/* 3 Quick Metric Mini-Cards */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-surface/80 border border-slate-800 rounded-xl p-2.5 flex flex-col items-center justify-center text-center">
-          <div className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center mb-1">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-2.5 flex flex-col items-center justify-center text-center">
+          <div className="w-7 h-7 rounded-lg bg-neutral-800 text-white flex items-center justify-center mb-1">
             <Package size={15} />
           </div>
-          <span className="text-xs text-slate-400 font-medium">ທັງໝົດ</span>
-          <span className="text-base font-bold text-slate-100">{totalOrders}</span>
+          <span className="text-xs text-neutral-400 font-medium">ທັງໝົດ</span>
+          <span className="text-base font-bold text-white">{totalOrders}</span>
         </div>
 
-        <div className="bg-surface/80 border border-slate-800 rounded-xl p-2.5 flex flex-col items-center justify-center text-center">
-          <div className="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center mb-1">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-2.5 flex flex-col items-center justify-center text-center">
+          <div className="w-7 h-7 rounded-lg bg-neutral-800 text-neutral-300 flex items-center justify-center mb-1">
             <Truck size={15} />
           </div>
-          <span className="text-xs text-slate-400 font-medium">ກຳລັງມາ</span>
-          <span className="text-base font-bold text-amber-400">{inTransitCount}</span>
+          <span className="text-xs text-neutral-400 font-medium">ກຳລັງມາ</span>
+          <span className="text-base font-bold text-neutral-200">{inTransitCount}</span>
         </div>
 
-        <div className="bg-surface/80 border border-neon/30 bg-neon/5 rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-neon-sm">
-          <div className="w-7 h-7 rounded-lg bg-neon/20 text-neon flex items-center justify-center mb-1">
+        <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-2.5 flex flex-col items-center justify-center text-center shadow-sm">
+          <div className="w-7 h-7 rounded-lg bg-white text-black flex items-center justify-center mb-1">
             <CheckCircle2 size={15} />
           </div>
-          <span className="text-xs text-slate-300 font-medium">ຮອດລາວແລ້ວ</span>
-          <span className="text-base font-bold text-neon">{arrivedLaosCount}</span>
+          <span className="text-xs text-neutral-300 font-medium">ຮອດລາວແລ້ວ</span>
+          <span className="text-base font-bold text-white">{arrivedLaosCount}</span>
         </div>
       </div>
     </div>

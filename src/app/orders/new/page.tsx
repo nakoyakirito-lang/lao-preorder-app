@@ -944,7 +944,7 @@ function NewOrderForm() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-black text-sm font-black flex items-center justify-center gap-2 shadow-lg transition-all"
+              className="w-full py-3.5 rounded-2xl bg-white hover:bg-neutral-200 text-black text-sm font-black flex items-center justify-center gap-2 shadow-lg transition-all"
             >
               <Check size={18} />
               {submitting ? 'ກຳລັງບັນທຶກ...' : 'ບັນທຶກອໍເດີພຣີອໍເດີມາຂາຍ 🏷️'}

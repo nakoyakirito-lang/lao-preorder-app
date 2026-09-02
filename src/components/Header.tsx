@@ -19,24 +19,24 @@ export const Header: React.FC<HeaderProps> = ({
   const [showScanner, setShowScanner] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-slate-800/80 px-4 pt-3 pb-3">
+    <header className="sticky top-0 z-40 bg-black/95 backdrop-blur-md border-b border-neutral-800 px-4 pt-3 pb-3">
       {/* Top Profile & Shop Banner */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-slate-900 to-slate-800 border-2 border-neon flex items-center justify-center shadow-neon-sm overflow-hidden">
-            <span className="text-neon font-black text-sm tracking-wider">LAO</span>
+          <div className="w-10 h-10 rounded-full bg-neutral-900 border-2 border-white flex items-center justify-center shadow-sm overflow-hidden">
+            <span className="text-white font-black text-sm tracking-wider">LAO</span>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h1 className="font-bold text-base text-slate-100 leading-tight">
+              <h1 className="font-black text-base text-white leading-tight">
                 LAO PREORDER
               </h1>
-              <span className="bg-neon/15 text-neon text-[10px] font-bold px-1.5 py-0.5 rounded border border-neon/30">
+              <span className="bg-white text-black text-[10px] font-black px-1.5 py-0.5 rounded">
                 PRO
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-neon animate-pulse"></span>
+            <p className="text-[11px] text-neutral-400 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
               ຈີນ ➔ ລາວ 🇨🇳🇱🇦 | ໄທ ➔ ລາວ 🇹🇭🇱🇦
             </p>
           </div>
@@ -46,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={() => setShowScanner(true)}
-            className="h-9 px-2.5 rounded-xl bg-neon/15 border border-neon/40 text-neon flex items-center gap-1.5 text-xs font-bold hover:bg-neon hover:text-black transition-all shadow-neon-sm"
+            className="h-9 px-3 rounded-xl bg-white text-black flex items-center gap-1.5 text-xs font-bold hover:bg-neutral-200 transition-all shadow-sm"
             title="ສະແກນບາໂຄ້ດ"
           >
             <Camera size={16} />
@@ -55,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <Link
             href="/settings"
-            className="w-9 h-9 rounded-xl bg-surface border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
+            className="w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-700 flex items-center justify-center text-neutral-300 hover:text-white hover:border-white transition-colors"
           >
             <ShieldCheck size={18} />
           </Link>
