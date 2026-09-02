@@ -662,29 +662,65 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
           </div>
         </div>
 
-        {/* Modal Footer */}
-        <div className="p-3.5 bg-slate-900 border-t border-slate-800 flex gap-2">
-          <button
-            type="button"
-            onClick={handleCopyArrivalNotice}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all ${
-              copied
-                ? 'bg-neon/20 text-neon border-neon'
-                : 'bg-surface text-slate-300 border-slate-700 hover:text-neon hover:border-neon'
-            }`}
-          >
-            {copied ? <Check size={14} /> : <Copy size={14} />}
-            {copied ? 'ກັອບປີ້ແລ້ວ!' : 'ກັອບປີ້ຂໍ້ຄວາມແຈ້ງລູກຄ້າ'}
-          </button>
+        {/* Modal Footer & Notification Actions */}
+        <div className="p-3.5 bg-neutral-900 border-t border-neutral-800 space-y-2">
+          {/* Arrived WhatsApp Notification Button */}
+          {customerPhone && (
+            <a
+              href={`https://wa.me/${customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                generateCustomerMessage(
+                  {
+                    ...order,
+                    service_type: serviceType,
+                    customer_name: customerName,
+                    customer_phone: customerPhone,
+                    product_name: productName,
+                    delivery_provider: deliveryProvider,
+                    delivery_province: deliveryProvince,
+                    delivery_branch: deliveryBranch,
+                    product_cost_lak: effectiveProductCostLAK,
+                    selling_price_lak: sellingPriceLAK,
+                    deposit_lak: effectiveDepositLAK,
+                    shipping_cost_lak: effectiveShippingCharged,
+                    service_fee_lak: Number(serviceFeeLAK) || 0,
+                    total_cost_lak: totalCostLAK,
+                    balance_due_lak: balanceDueLAK,
+                    status: currentStatus,
+                  },
+                  'arrived'
+                )
+              )}`}
+              target="_blank"
+              rel="noreferrer"
+              className="w-full py-2.5 px-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center justify-center gap-2 shadow-md transition-all"
+            >
+              <span>📢 ສົ່ງ WhatsApp ແຈ້ງລູກຄ້າວ່າຂອງຮອດລາວແລ້ວ! 🇱🇦</span>
+            </a>
+          )}
 
-          <button
-            type="button"
-            onClick={handleSave}
-            className="flex-1 py-2.5 px-3 rounded-2xl neon-button text-xs font-bold flex items-center justify-center gap-1.5"
-          >
-            <Check size={16} />
-            ບັນທຶກຂໍ້ມູນ
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={handleCopyArrivalNotice}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all ${
+                copied
+                  ? 'bg-neutral-800 text-white border-white'
+                  : 'bg-neutral-900 text-neutral-300 border-neutral-700 hover:text-white hover:border-white'
+              }`}
+            >
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? 'ກັອບປີ້ແລ້ວ!' : 'ກັອບປີ້ຂໍ້ຄວາມແຈ້ງລູກຄ້າ'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSave}
+              className="flex-1 py-2.5 px-3 rounded-2xl bg-white hover:bg-neutral-200 text-black text-xs font-black flex items-center justify-center gap-1.5 shadow-md"
+            >
+              <Check size={16} />
+              ບັນທຶກຂໍ້ມູນ
+            </button>
+          </div>
         </div>
       </div>
 

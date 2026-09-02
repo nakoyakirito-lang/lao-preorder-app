@@ -34,23 +34,31 @@ export function generateCustomerMessage(order: Order, type: 'order_created' | 'a
   }
 
   if (type === 'arrived') {
-    return `🎉【 ແຈ້ງເຕືອນ: ສິນຄ້າຮອດສາງລາວແລ້ວ! 】
+    const priceLabel = order.service_type === 'PREORDER' ? '💵 ລາຄາສິນຄ້າ:' : '💵 ຄ່າສິນຄ້າ:';
+    const displayProductPrice =
+      order.service_type === 'PREORDER' && order.selling_price_lak
+        ? order.selling_price_lak
+        : order.product_cost_lak;
+
+    return `🎉【 ແຈ້ງເຕືອນ: ສິນຄ້າຮອດສາງລາວແລ້ວ! 🇱🇦 】
 ━━━━━━━━━━━━━━━━━━━━
 👤 ລູກຄ້າ: ${order.customer_name}
+📱 ເບີໂທ: ${order.customer_phone}
 🏷️ ເລກຕິດຕາມ: ${order.tracking_code}
 🛒 ສິນຄ້າ: ${order.product_name}
 📍 ຂົນສົ່ງປາຍທາງ: ${destLocation}
 
-💵 ຕົ້ນທຶນສິນຄ້າ: ${formatLAK(order.product_cost_lak)}
+${priceLabel} ${formatLAK(displayProductPrice)}
 🚚 ຄ່າຂົນສົ່ງມາລາວ: ${formatLAK(order.shipping_cost_lak)}
 ━━━━━━━━━━━━━━━━━━━━
 💰 ຍອດລວມທັງໝົດ: ${formatLAK(order.total_cost_lak)}
 💳 ມັດຈຳແລ້ວ: -${formatLAK(order.deposit_lak)}
 🔥 ຍອດທີ່ຕ້ອງຊຳລະ / COD: 👉 ${formatLAK(order.balance_due_lak)} 👈
 
-🔗 ກົດເບິ່ງບິນ ແລະ ສະຖານະ: ${trackingUrl}
+🔗 ກົດເບິ່ງບິນ ແລະ ສະຖານະພັດສະດຸ:
+${trackingUrl}
 ━━━━━━━━━━━━━━━━━━━━
-ກະລຸນາກວດສອບຍອດເງິນ ແລະ ແຈ້ງຊຳລະ/ກຽມຮັບສິນຄ້າໄດ້ເລີຍ! 🛵📦`;
+ກະລຸນາກວດສອບຍອດເງິນ ແລະ ແຈ້ງຈັດສົ່ງໄດ້ເລີຍ! 🛵📦`;
   }
 
   if (type === 'delivering') {

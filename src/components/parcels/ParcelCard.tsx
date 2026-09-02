@@ -191,33 +191,42 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
       </div>
 
       {/* Action Footer Bar */}
-      <div className="px-3 py-2 bg-slate-900/60 border-t border-slate-800/60 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5">
+      <div className="px-3 py-2 bg-neutral-900 border-t border-neutral-800 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 flex-wrap">
           {/* 1-Click Copy Message */}
           <button
             type="button"
             onClick={handleCopyMessage}
             className={`flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all ${
               copied
-                ? 'bg-neon/20 text-neon border-neon shadow-neon-sm'
-                : 'bg-surface text-slate-300 border-slate-700 hover:text-neon hover:border-neon'
+                ? 'bg-neutral-800 text-white border-white'
+                : 'bg-neutral-900 text-neutral-300 border-neutral-700 hover:text-white hover:border-white'
             }`}
           >
             {copied ? <Check size={13} /> : <Copy size={13} />}
-            {copied ? 'ກັອບປີ້ແລ້ວ!' : 'ກັອບປີ້ຂໍ້ຄວາມ'}
+            {copied ? 'ກັອບປີ້ແລ້ວ!' : order.status === 'arrived_laos' ? '📋 ບິນຮອດລາວ' : 'ກັອບປີ້ຂໍ້ຄວາມ'}
           </button>
 
-          {/* Quick WhatsApp Link */}
+          {/* Quick WhatsApp Link with Pre-filled Arrived Notice */}
           {order.customer_phone && (
             <a
-              href={`https://wa.me/${order.customer_phone.replace(/[^0-9]/g, '')}`}
+              href={`https://wa.me/${order.customer_phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                generateCustomerMessage(
+                  order,
+                  order.status === 'arrived_laos' ? 'arrived' : 'order_created'
+                )
+              )}`}
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
+              className={`flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg transition-all ${
+                order.status === 'arrived_laos'
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
+                  : 'bg-neutral-800 text-neutral-300 border border-neutral-700 hover:text-white'
+              }`}
             >
               <MessageCircle size={13} />
-              WhatsApp
+              {order.status === 'arrived_laos' ? '📢 ແຈ້ງຮອດລາວ' : 'WhatsApp'}
             </a>
           )}
 
@@ -228,7 +237,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/30 hover:bg-sky-500/20"
+              className="flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-neutral-800 text-neutral-300 border border-neutral-700 hover:text-white"
               title="ເບິ່ງລິ້ງສັ່ງສິນຄ້າ"
             >
               <ExternalLink size={13} />
@@ -237,7 +246,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
           )}
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           {order.status !== 'arrived_laos' && order.status !== 'completed' && onCheckIn && (
             <button
               type="button"
@@ -245,16 +254,16 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
                 e.stopPropagation();
                 onCheckIn(order);
               }}
-              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-neon text-black hover:bg-neon-400 shadow-neon-sm transition-all"
+              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-white text-black hover:bg-neutral-200 shadow-sm transition-all"
             >
-              📥 ເຄື່ອງຮອດລາວ
+              📥 ເຊັກອິນຮອດລາວ
             </button>
           )}
 
           <Link
             href={`/track/${order.tracking_code}`}
             onClick={(e) => e.stopPropagation()}
-            className="w-7 h-7 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-colors"
+            className="w-7 h-7 rounded-lg bg-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-neutral-700 transition-colors"
             title="ເບິ່ງໜ້າຕິດຕາມ"
           >
             <ChevronRight size={16} />
