@@ -517,11 +517,11 @@ function NewOrderForm() {
           /* FORM 2: 🏷️ ພຣີອໍເດີມາຂາຍເອງ (PREORDER RETAIL) */
           /* ========================================================= */
           <>
-            {/* Product & Direct Selling Price in LAK */}
+            {/* Product, Cost Price & Selling Price in LAK */}
             <div className="p-3.5 bg-surface rounded-2xl border border-amber-500/30 space-y-3">
               <h2 className="text-xs font-bold text-amber-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
                 <Tag size={15} className="text-amber-400" />
-                ລາຍການສິນຄ້າ & ລາຄາຂາຍໃຫ້ລູກຄ້າ (LAK)
+                ລາຍການສິນຄ້າ, ຕົ້ນທຶນ & ລາຄາຂາຍ (LAK)
               </h2>
 
               <div className="space-y-1">
@@ -538,33 +538,69 @@ function NewOrderForm() {
                 />
               </div>
 
-              {/* Direct Selling Price Input (LAK) */}
-              <div className="p-3 bg-amber-500/10 rounded-2xl border border-amber-500/40 space-y-1.5">
-                <label className="text-xs font-black text-amber-400 flex items-center justify-between">
-                  <span>🔥 ລາຄາຂາຍໃຫ້ລູກຄ້າ (LAK) *</span>
-                  <span className="text-[10px] text-amber-300 font-normal">
-                    ລາຄາທີ່ແຈ້ງລູກຄ້າ
-                  </span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    min="0"
-                    step="1000"
-                    required
-                    value={sellingPriceLAK}
-                    onChange={(e) =>
-                      setSellingPriceLAK(e.target.value ? Number(e.target.value) : '')
-                    }
-                    placeholder="ເຊັ່ນ: 180000"
-                    className="w-full px-3.5 py-2.5 bg-background border border-amber-400 rounded-xl text-base font-black text-amber-400 focus:outline-none"
-                    autoFocus
-                  />
-                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
-                    ກີບ (LAK)
-                  </span>
+              {/* Dual Inputs: ຕົ້ນທຶນສິນຄ້າ vs ລາຄາຂາຍ */}
+              <div className="grid grid-cols-2 gap-2.5">
+                {/* Cost Price */}
+                <div className="p-3 bg-slate-900 rounded-2xl border border-slate-700 space-y-1.5">
+                  <label className="text-xs font-bold text-slate-300 flex items-center justify-between">
+                    <span>💵 ຕົ້ນທຶນສິນຄ້າ *</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min="0"
+                      step="1000"
+                      required
+                      value={internalCostLAK}
+                      onChange={(e) =>
+                        setInternalCostLAK(e.target.value ? Number(e.target.value) : '')
+                      }
+                      placeholder="ເຊັ່ນ: 100000"
+                      className="w-full px-3 py-2 bg-background border border-slate-600 rounded-xl text-sm font-bold text-slate-100 focus:outline-none focus:border-neon"
+                    />
+                    <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                      ກີບ
+                    </span>
+                  </div>
+                </div>
+
+                {/* Selling Price */}
+                <div className="p-3 bg-amber-500/10 rounded-2xl border border-amber-500/40 space-y-1.5">
+                  <label className="text-xs font-black text-amber-400 flex items-center justify-between">
+                    <span>🔥 ລາຄາຂາຍ *</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min="0"
+                      step="1000"
+                      required
+                      value={sellingPriceLAK}
+                      onChange={(e) =>
+                        setSellingPriceLAK(e.target.value ? Number(e.target.value) : '')
+                      }
+                      placeholder="ເຊັ່ນ: 180000"
+                      className="w-full px-3 py-2 bg-background border border-amber-400 rounded-xl text-sm font-black text-amber-400 focus:outline-none"
+                    />
+                    <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                      ກີບ
+                    </span>
+                  </div>
                 </div>
               </div>
+
+              {/* Profit preview if cost and selling price are provided */}
+              {Number(sellingPriceLAK) > 0 && Number(internalCostLAK) > 0 && (
+                <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs">
+                  <span className="text-emerald-400 font-bold flex items-center gap-1">
+                    <TrendingUp size={14} />
+                    ກຳໄລສິນຄ້າຂັ້ນຕົ້ນ:
+                  </span>
+                  <span className="text-emerald-400 font-black text-sm">
+                    +{formatLAK(Number(sellingPriceLAK) - Number(internalCostLAK))}
+                  </span>
+                </div>
+              )}
 
               {/* Customer Deposit Input */}
               <div className="space-y-1">
@@ -580,7 +616,7 @@ function NewOrderForm() {
                     onChange={(e) =>
                       setDepositLAK(e.target.value ? Number(e.target.value) : '')
                     }
-                    placeholder="ເຊັ່ນ: 50000 (ຫຼື 0)"
+                    placeholder="ເຊັ່ນ: 50000 (ຫຼື 0 ຖ້າຍັງບໍ່ມັດຈຳ)"
                     className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs font-bold text-emerald-400 focus:border-neon focus:outline-none"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
@@ -593,7 +629,7 @@ function NewOrderForm() {
               <div className="p-3 bg-neon/5 rounded-xl border border-neon/30 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] text-slate-400 block">
-                    ຍອດ COD ທີ່ເຫຼືອເກັບລູກຄ້າ
+                    ຍອດ COD ທີ່ເຫຼືອເກັບລູກຄ້າ (ລາຄາຂາຍ - ມັດຈຳ)
                   </span>
                   <span className="text-base font-black text-neon neon-glow-text">
                     {formatLAK(retailInitialBalanceDueLAK)}
@@ -702,55 +738,18 @@ function NewOrderForm() {
               />
             </div>
 
-            {/* Internal Shop Cost (Optional for Profit Calculation) */}
-            <div className="p-3.5 bg-surface rounded-2xl border border-slate-800 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-300 flex items-center gap-1">
-                  <TrendingUp size={14} className="text-emerald-400" />
-                  ຕົ້ນທຶນພາຍໃນຮ້ານ (ບັນທຶກໄວ້ເບິ່ງກຳໄລ)
-                </span>
-                <span className="text-[10px] text-slate-500">ບໍ່ບັງຄັບ</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2.5">
-                <div className="space-y-1">
-                  <label className="text-[11px] text-slate-400">
-                    ຕົ້ນທຶນສິນຄ້າ (ກີບ LAK)
-                  </label>
-                  <input
-                    type="number"
-                    step="1000"
-                    value={internalCostLAK}
-                    onChange={(e) =>
-                      setInternalCostLAK(e.target.value ? Number(e.target.value) : '')
-                    }
-                    placeholder="ເຊັ່ນ: 110000"
-                    className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[11px] text-slate-400">
-                    ເລກແທຣັກຕົ້ນທາງ (ຈີນ/ໄທ)
-                  </label>
-                  <input
-                    type="text"
-                    value={foreignTrackingNo}
-                    onChange={(e) => setForeignTrackingNo(e.target.value)}
-                    placeholder="SF... / TH..."
-                    className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              {retailProfitLAK > 0 && (
-                <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs">
-                  <span className="text-emerald-400 font-bold">✨ ກຳໄລສິນຄ້າຂັ້ນຕົ້ນ:</span>
-                  <span className="text-emerald-400 font-extrabold">
-                    +{formatLAK(retailProfitLAK)}
-                  </span>
-                </div>
-              )}
+            {/* Optional Foreign Tracking # */}
+            <div className="p-3.5 bg-surface rounded-2xl border border-slate-800 space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300">
+                ເລກແທຣັກກິ້ງຕົ້ນທາງ (ຈີນ/ໄທ ຖ້າມີ)
+              </label>
+              <input
+                type="text"
+                value={foreignTrackingNo}
+                onChange={(e) => setForeignTrackingNo(e.target.value)}
+                placeholder="SF192837492CN / TH019283TH"
+                className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+              />
             </div>
 
             <button
