@@ -67,7 +67,7 @@ export const ThermalBill: React.FC<ThermalBillProps> = ({
           ໂທ: {order.customer_phone}
         </div>
         <div className="text-xs font-bold text-red-700 mt-1 pt-1 border-t border-gray-300">
-          📍 {order.delivery_provider}: {order.delivery_branch || 'ສາຂາຫຼັກ'}
+          📍 {order.delivery_provider}: {order.delivery_province ? `${order.delivery_province} - ` : ''}{order.delivery_branch || 'ສາຂາຫຼັກ'}
         </div>
       </div>
 

@@ -9,12 +9,16 @@ export function generateCustomerMessage(order: Order, type: 'order_created' | 'a
   const trackingUrl = typeof window !== 'undefined' ? `${window.location.origin}/track/${order.tracking_code}` : `https://your-domain.com/track/${order.tracking_code}`;
   const statusInfo = STATUS_CONFIG[order.status]?.labelLao || order.status;
 
+  const destLocation = order.delivery_province
+    ? `${order.delivery_provider} (${order.delivery_province} - ${order.delivery_branch || 'ສາຂາຫຼັກ'})`
+    : `${order.delivery_provider} - ${order.delivery_branch || 'ສາຂາຫຼັກ'}`;
+
   if (type === 'order_created') {
     return `📦【 ແຈ້ງການຮັບອໍເດີພຣີອໍເດີ 】
 ━━━━━━━━━━━━━━━━━━━━
 👤 ລູກຄ້າ: ${order.customer_name}
 📱 ເບີໂທ: ${order.customer_phone}
-📍 ຂົນສົ່ງປາຍທາງ: ${order.delivery_provider} - ${order.delivery_branch || 'ສາຂາຫຼັກ'}
+📍 ຂົນສົ່ງປາຍທາງ: ${destLocation}
 🛣️ ສາຍທາງ: ${routeName}
 🏷️ ເລກຕິດຕາມ: ${order.tracking_code}
 
@@ -35,7 +39,7 @@ export function generateCustomerMessage(order: Order, type: 'order_created' | 'a
 👤 ລູກຄ້າ: ${order.customer_name}
 🏷️ ເລກຕິດຕາມ: ${order.tracking_code}
 🛒 ສິນຄ້າ: ${order.product_name}
-📍 ຂົນສົ່ງປາຍທາງ: ${order.delivery_provider} - ${order.delivery_branch || 'ສາຂາຫຼັກ'}
+📍 ຂົນສົ່ງປາຍທາງ: ${destLocation}
 
 💵 ຕົ້ນທຶນສິນຄ້າ: ${formatLAK(order.product_cost_lak)}
 🚚 ຄ່າຂົນສົ່ງມາລາວ: ${formatLAK(order.shipping_cost_lak)}
@@ -54,7 +58,7 @@ export function generateCustomerMessage(order: Order, type: 'order_created' | 'a
 ━━━━━━━━━━━━━━━━━━━━
 👤 ລູກຄ້າ: ${order.customer_name}
 🏷️ ເລກຕິດຕາມ: ${order.tracking_code}
-📍 ຂົນສົ່ງ: ${order.delivery_provider} (${order.delivery_branch})
+📍 ຂົນສົ່ງ: ${destLocation}
 💰 ຍອດເກັບປາຍທາງ (COD): ${formatLAK(order.balance_due_lak)}
 
 🔗 ເບິ່ງລາຍລະອຽດ: ${trackingUrl}
@@ -67,7 +71,7 @@ export function generateCustomerMessage(order: Order, type: 'order_created' | 'a
 ━━━━━━━━━━━━━━━━━━━━
 🏷️ ລະຫັດບິນ: ${order.tracking_code}
 👤 ຜູ້ຮັບ: ${order.customer_name} (${order.customer_phone})
-📍 ປາຍທາງ: ${order.delivery_provider} - ${order.delivery_branch}
+📍 ປາຍທາງ: ${destLocation}
 🛒 ລາຍການ: ${order.product_name}
 🛣️ ສາຍ: ${routeName}
 📊 ສະຖານະ: ${statusInfo}

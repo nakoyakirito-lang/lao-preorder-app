@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Order, DELIVERY_PROVIDERS, ServiceType } from '@/types/database';
+import { Order, DELIVERY_PROVIDERS, LAO_PROVINCES, ServiceType } from '@/types/database';
 import {
   formatLAK,
   calculateTotalCostLAK,
@@ -78,6 +78,9 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
   );
   const [depositLAK, setDepositLAK] = useState<number>(order.deposit_lak || 0);
   const [deliveryProvider, setDeliveryProvider] = useState(order.delivery_provider);
+  const [deliveryProvince, setDeliveryProvince] = useState(
+    order.delivery_province || LAO_PROVINCES[0]
+  );
   const [deliveryBranch, setDeliveryBranch] = useState(order.delivery_branch);
   const [foreignTrackingNo, setForeignTrackingNo] = useState(
     order.foreign_tracking_no || ''
@@ -140,6 +143,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
       selling_price_lak: sellingPriceLAK,
       deposit_lak: effectiveDepositLAK,
       delivery_provider: deliveryProvider,
+      delivery_province: deliveryProvince,
       delivery_branch: deliveryBranch,
       foreign_tracking_no: foreignTrackingNo,
       product_image_url: productImageUrl,
@@ -458,7 +462,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-slate-300">
                       ຂົນສົ່ງໃນລາວ
@@ -466,7 +470,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                     <select
                       value={deliveryProvider}
                       onChange={(e) => setDeliveryProvider(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
                     >
                       {DELIVERY_PROVIDERS.map((p) => (
                         <option key={p.id} value={p.id}>
@@ -478,13 +482,30 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
 
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-slate-300">
-                      ສາຂາປາຍທາງ
+                      ແຂວງ (Province)
+                    </label>
+                    <select
+                      value={deliveryProvince}
+                      onChange={(e) => setDeliveryProvince(e.target.value)}
+                      className="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-neon focus:border-neon focus:outline-none"
+                    >
+                      {LAO_PROVINCES.map((p) => (
+                        <option key={p} value={p}>
+                          {p}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-semibold text-slate-300">
+                      ສາຂາ / ບ້ານ / ຈຸດຮັບ
                     </label>
                     <input
                       type="text"
                       value={deliveryBranch}
                       onChange={(e) => setDeliveryBranch(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
                     />
                   </div>
                 </div>

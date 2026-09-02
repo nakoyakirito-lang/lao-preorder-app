@@ -22,6 +22,7 @@ export interface Order {
   customer_social_url?: string;
   customer_social_image?: string;
   delivery_provider: string;
+  delivery_province?: string;
   delivery_branch: string;
   
   // Product
@@ -80,6 +81,27 @@ export interface DeliveryProviderOption {
   nameEn: string;
   color: string;
 }
+
+export const LAO_PROVINCES = [
+  'ນະຄອນຫຼວງວຽງຈັນ (Vientiane Cap.)',
+  'ວຽງຈັນ (Vientiane Prov.)',
+  'ຫຼວງພະບາງ (Luang Prabang)',
+  'ຈຳປາສັກ (Champasak / ປາກເຊ)',
+  'ສະຫວັນນະເຂດ (Savannakhet)',
+  'ຄຳມ່ວນ (Khammouane / ທ່າແຂກ)',
+  'ບໍລິຄຳໄຊ (Bolikhamxay / ປາກຊັນ)',
+  'ຊຽງຂວາງ (Xieng Khouang)',
+  'ຫົວພັນ (Houaphanh / ຊຳເໜືອ)',
+  'ຫຼວງນ້ຳທາ (Luang Namtha)',
+  'ອຸດົມໄຊ (Oudomxay / ເມືອງໄຊ)',
+  'ບໍ່ແກ້ວ (Bokeo / ຫ້ວຍຊາຍ)',
+  'ຜົ້ງສາລີ (Phongsaly)',
+  'ໄຊຍະບູລີ (Xayabury)',
+  'ໄຊສົມບູນ (Xaysomboun)',
+  'ສາລະວັນ (Salavan)',
+  'ເຊກອງ (Sekong)',
+  'ອັດຕະປື (Attapeu)',
+];
 
 export const DELIVERY_PROVIDERS: DeliveryProviderOption[] = [
   { id: 'RungAroun', nameLao: 'ຂົນສົ່ງ ຮຸ່ງອາລຸນ (HAL Express)', nameEn: 'RungAroun Express', color: '#dc2626' },
