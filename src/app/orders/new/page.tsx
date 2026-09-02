@@ -322,119 +322,37 @@ function NewOrderForm() {
                 />
               </div>
 
-              {/* Pricing Input: LAK Direct vs Foreign Converter */}
-              <div className="space-y-2 p-3 bg-background rounded-2xl border border-slate-700">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-200">
-                    💰 ລາຄາສິນຄ້າ (Product Price) *
-                  </label>
-                  {/* Quick Input Mode Switcher */}
-                  <div className="flex bg-slate-900 rounded-lg p-0.5 border border-slate-700">
-                    <button
-                      type="button"
-                      onClick={() => setProxyPriceMode('LAK')}
-                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all ${
-                        proxyPriceMode === 'LAK'
-                          ? 'bg-neon text-black shadow-neon-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      🇱🇦 ປ້ອນເປັນກີບ (LAK)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setProxyPriceMode('FOREIGN')}
-                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all ${
-                        proxyPriceMode === 'FOREIGN'
-                          ? 'bg-neon text-black shadow-neon-sm'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      🌐 ປ້ອນ {originCurrency === 'CNY' ? 'ຢວນ ¥' : 'ບາດ ฿'}
-                    </button>
-                  </div>
+              {/* Pricing Input: Direct LAK (Kip) */}
+              <div className="space-y-1.5 p-3.5 bg-surface border-2 border-neon/40 rounded-2xl">
+                <label className="text-xs font-black text-neon flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <DollarSign size={16} className="text-neon" />
+                    ຕົ້ນທຶນ / ລາຄາສິນຄ້າ (ເງິນກີບ LAK) *
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-normal">
+                    ປ້ອນຍອດເງິນກີບໄດ້ເລີຍ
+                  </span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="0"
+                    step="1000"
+                    required
+                    value={directProxyCostLAK}
+                    onChange={(e) =>
+                      setDirectProxyCostLAK(
+                        e.target.value ? Number(e.target.value) : ''
+                      )
+                    }
+                    placeholder="ເຊັ່ນ: 150000"
+                    className="w-full px-3.5 py-3 bg-background border border-neon rounded-xl text-lg font-black text-neon focus:outline-none focus:ring-2 focus:ring-neon"
+                    autoFocus
+                  />
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-neon">
+                    ກີບ (LAK)
+                  </span>
                 </div>
-
-                {proxyPriceMode === 'LAK' ? (
-                  /* Option A: Enter directly in LAK (Default) */
-                  <div className="space-y-1">
-                    <div className="relative">
-                      <input
-                        type="number"
-                        min="0"
-                        step="1000"
-                        required
-                        value={directProxyCostLAK}
-                        onChange={(e) =>
-                          setDirectProxyCostLAK(
-                            e.target.value ? Number(e.target.value) : ''
-                          )
-                        }
-                        placeholder="ເຊັ່ນ: 150000"
-                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-neon rounded-xl text-base font-black text-neon focus:outline-none focus:ring-1 focus:ring-neon"
-                        autoFocus
-                      />
-                      <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
-                        ກີບ (LAK)
-                      </span>
-                    </div>
-                    {Number(directProxyCostLAK) > 0 && effectiveRate > 0 && (
-                      <span className="text-[10px] text-slate-400 block pt-0.5">
-                        ≈ {formatForeignCurrency(
-                          Math.round((Number(directProxyCostLAK) / effectiveRate) * 100) / 100,
-                          originCurrency
-                        )}{' '}
-                        (ຕາມເລດ {effectiveRate.toLocaleString()})
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  /* Option B: Enter foreign price + exchange rate */
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-300">
-                        ລາຄາຕົ້ນທາງ ({originCurrency === 'CNY' ? 'ຢວນ ¥' : 'ບາດ ฿'}) *
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        required
-                        value={originCost}
-                        onChange={(e) =>
-                          setOriginCost(e.target.value ? Number(e.target.value) : '')
-                        }
-                        placeholder={originCurrency === 'CNY' ? 'ເຊັ່ນ: 199' : 'ເຊັ່ນ: 650'}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-neon focus:border-neon focus:outline-none"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-semibold text-slate-300">
-                        ເລດເງິນ (1 {originCurrency} = ກີບ)
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        value={customRate}
-                        onChange={(e) =>
-                          setCustomRate(e.target.value ? Number(e.target.value) : '')
-                        }
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-100 focus:border-neon focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Auto Calculated Product Cost Badge */}
-              <div className="p-2.5 bg-background rounded-xl border border-slate-700 flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-300">
-                  💵 ຄ່າສິນຄ້າເກັບລູກຄ້າ:
-                </span>
-                <span className="text-sm font-black text-neon">
-                  {formatLAK(proxyProductCostLAK)}
-                </span>
               </div>
 
               <div className="space-y-1">
