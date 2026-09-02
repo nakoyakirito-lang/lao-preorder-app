@@ -62,6 +62,8 @@ function NewOrderForm() {
   const [notes, setNotes] = useState('');
 
   // Mode 1 (Buy-For-You / ຮັບສັ່ງ) Specific Fields:
+  const [proxyPriceMode, setProxyPriceMode] = useState<'LAK' | 'FOREIGN'>('LAK');
+  const [directProxyCostLAK, setDirectProxyCostLAK] = useState<number | ''>('');
   const [originCost, setOriginCost] = useState<number | ''>('');
   const [customRate, setCustomRate] = useState<number | ''>('');
 
@@ -90,8 +92,12 @@ function NewOrderForm() {
   const currentDepositLAK = Number(depositLAK) || 0;
   const isProxy = serviceType === 'BUY_FOR_YOU';
 
-  // Mode 1 Product Cost (from ¥/฿ * Rate)
-  const proxyProductCostLAK = calculateProductCostLAK(Number(originCost) || 0, effectiveRate);
+  // Mode 1 Product Cost: directly in LAK or from (¥/฿ * Rate)
+  const proxyProductCostLAK =
+    proxyPriceMode === 'LAK'
+      ? Number(directProxyCostLAK) || 0
+      : calculateProductCostLAK(Number(originCost) || 0, effectiveRate);
+
   const proxyInitialBalanceDueLAK = calculateBalanceDueLAK(proxyProductCostLAK, currentDepositLAK);
 
   // Mode 2 Calculations (Direct Selling Price in LAK)
@@ -106,8 +112,8 @@ function NewOrderForm() {
     e.preventDefault();
 
     if (isProxy) {
-      if (!customerName || !customerPhone || !productName || !originCost) {
-        alert('ກະລຸນາປ້ອນຂໍ້ມູນສຳຄັນ: ຊື່ລູກຄ້າ, ເບີໂທ, ຊື່ສິນຄ້າ, ລາຄາຕົ້ນທາງ (¥/฿)');
+      if (!customerName || !customerPhone || !productName || proxyProductCostLAK <= 0) {
+        alert('ກະລຸນາປ້ອນຂໍ້ມູນສຳຄັນ: ຊື່ລູກຄ້າ, ເບີໂທ, ຊື່ສິນຄ້າ, ລາຄາສິນຄ້າ (ກີບ LAK)');
         return;
       }
     } else {
@@ -119,6 +125,13 @@ function NewOrderForm() {
 
     setSubmitting(true);
     const trackingCode = generateTrackingCode(route);
+
+    const calculatedOriginCost =
+      proxyPriceMode === 'FOREIGN'
+        ? Number(originCost)
+        : effectiveRate > 0
+        ? Math.round(Number(directProxyCostLAK) / effectiveRate)
+        : 0;
 
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
@@ -137,7 +150,7 @@ function NewOrderForm() {
       product_image_url: productImageUrl,
       order_date: new Date().toISOString().split('T')[0],
       origin_currency: originCurrency,
-      origin_cost: isProxy ? Number(originCost) : 0,
+      origin_cost: isProxy ? calculatedOriginCost : 0,
       exchange_rate: isProxy ? effectiveRate : 0,
       product_cost_lak: isProxy ? proxyProductCostLAK : (Number(internalCostLAK) || 0),
       selling_price_lak: !isProxy ? retailSellingPriceLAK : undefined,
@@ -309,40 +322,109 @@ function NewOrderForm() {
                 />
               </div>
 
-              {/* Foreign Price & Exchange Rate */}
-              <div className="grid grid-cols-2 gap-2.5">
-                <div className="space-y-1">
+              {/* Pricing Input: LAK Direct vs Foreign Converter */}
+              <div className="space-y-2 p-3 bg-background rounded-2xl border border-slate-700">
+                <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-slate-200">
-                    ລາຄາຕົ້ນທາງ ({originCurrency === 'CNY' ? 'ຢວນ ¥' : 'ບາດ ฿'}) *
+                    💰 ລາຄາສິນຄ້າ (Product Price) *
                   </label>
-                  <input
-                    type="number"
-                    step="any"
-                    min="0"
-                    required
-                    value={originCost}
-                    onChange={(e) =>
-                      setOriginCost(e.target.value ? Number(e.target.value) : '')
-                    }
-                    placeholder={originCurrency === 'CNY' ? 'ເຊັ່ນ: 199' : 'ເຊັ່ນ: 650'}
-                    className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs font-bold text-neon focus:border-neon focus:outline-none"
-                  />
+                  {/* Quick Input Mode Switcher */}
+                  <div className="flex bg-slate-900 rounded-lg p-0.5 border border-slate-700">
+                    <button
+                      type="button"
+                      onClick={() => setProxyPriceMode('LAK')}
+                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all ${
+                        proxyPriceMode === 'LAK'
+                          ? 'bg-neon text-black shadow-neon-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      🇱🇦 ປ້ອນເປັນກີບ (LAK)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setProxyPriceMode('FOREIGN')}
+                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all ${
+                        proxyPriceMode === 'FOREIGN'
+                          ? 'bg-neon text-black shadow-neon-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      🌐 ປ້ອນ {originCurrency === 'CNY' ? 'ຢວນ ¥' : 'ບາດ ฿'}
+                    </button>
+                  </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-300">
-                    ເລດເງິນຮ້ານ (1 {originCurrency} = ກີບ)
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    value={customRate}
-                    onChange={(e) =>
-                      setCustomRate(e.target.value ? Number(e.target.value) : '')
-                    }
-                    className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs font-bold text-slate-100 focus:border-neon focus:outline-none"
-                  />
-                </div>
+                {proxyPriceMode === 'LAK' ? (
+                  /* Option A: Enter directly in LAK (Default) */
+                  <div className="space-y-1">
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="0"
+                        step="1000"
+                        required
+                        value={directProxyCostLAK}
+                        onChange={(e) =>
+                          setDirectProxyCostLAK(
+                            e.target.value ? Number(e.target.value) : ''
+                          )
+                        }
+                        placeholder="ເຊັ່ນ: 150000"
+                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-neon rounded-xl text-base font-black text-neon focus:outline-none focus:ring-1 focus:ring-neon"
+                        autoFocus
+                      />
+                      <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
+                        ກີບ (LAK)
+                      </span>
+                    </div>
+                    {Number(directProxyCostLAK) > 0 && effectiveRate > 0 && (
+                      <span className="text-[10px] text-slate-400 block pt-0.5">
+                        ≈ {formatForeignCurrency(
+                          Math.round((Number(directProxyCostLAK) / effectiveRate) * 100) / 100,
+                          originCurrency
+                        )}{' '}
+                        (ຕາມເລດ {effectiveRate.toLocaleString()})
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  /* Option B: Enter foreign price + exchange rate */
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-bold text-slate-300">
+                        ລາຄາຕົ້ນທາງ ({originCurrency === 'CNY' ? 'ຢວນ ¥' : 'ບາດ ฿'}) *
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0"
+                        required
+                        value={originCost}
+                        onChange={(e) =>
+                          setOriginCost(e.target.value ? Number(e.target.value) : '')
+                        }
+                        placeholder={originCurrency === 'CNY' ? 'ເຊັ່ນ: 199' : 'ເຊັ່ນ: 650'}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-neon focus:border-neon focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-slate-300">
+                        ເລດເງິນ (1 {originCurrency} = ກີບ)
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        value={customRate}
+                        onChange={(e) =>
+                          setCustomRate(e.target.value ? Number(e.target.value) : '')
+                        }
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-100 focus:border-neon focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Auto Calculated Product Cost Badge */}
