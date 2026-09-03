@@ -5,10 +5,23 @@ import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { ParcelCard } from '@/components/parcels/ParcelCard';
 import { CheckInModal } from '@/components/warehouse/CheckInModal';
+import { BarcodeScannerModal } from '@/components/BarcodeScannerModal';
 import { Order, OrderStatus } from '@/types/database';
 import { getOrders, saveOrder, deleteOrder } from '@/lib/storage';
 import { useRouter } from 'next/navigation';
-import { Boxes, Plus, Filter, ArrowLeft, Printer, Trash2, Calendar, X, RotateCcw } from 'lucide-react';
+import {
+  Boxes,
+  Plus,
+  Filter,
+  ArrowLeft,
+  Printer,
+  Trash2,
+  Calendar,
+  X,
+  RotateCcw,
+  Camera,
+  Search,
+} from 'lucide-react';
 import Link from 'next/link';
 
 type DateFilterPreset = 'ALL' | 'TODAY' | 'LAST_7_DAYS' | 'THIS_MONTH' | 'CUSTOM';
@@ -24,6 +37,7 @@ export default function ParcelsPage() {
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
   const [activeCheckInOrder, setActiveCheckInOrder] = useState<Order | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
@@ -143,14 +157,37 @@ export default function ParcelsPage() {
       </div>
 
       <div className="p-4 space-y-3">
-        {/* Search Bar */}
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="ຄົ້ນຫາເລກພັດສະດຸ, ເບີໂທ, ຊື່ລູກຄ້າ..."
-          className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:outline-none shadow-sm"
-        />
+        {/* Search Bar & Scan Button */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="ຄົ້ນຫາເລກພັດສະດຸ, ເບີໂທ, ຊື່ລູກຄ້າ..."
+              className="w-full pl-9 pr-8 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:outline-none shadow-sm"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowScanner(true)}
+            className="px-3.5 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all flex-shrink-0"
+            title="ສະແກນບາໂຄ້ດ / QR Code ບິນ"
+          >
+            <Camera size={15} />
+            <span>ສະແກນບິນ</span>
+          </button>
+        </div>
 
         {/* Service Type Filter Tabs */}
         <div className="flex gap-1.5 p-1 bg-slate-200/70 rounded-2xl border border-slate-300">
@@ -348,6 +385,16 @@ export default function ParcelsPage() {
           order={activeCheckInOrder}
           onClose={() => setActiveCheckInOrder(null)}
           onSave={handleCheckInSave}
+        />
+      )}
+
+      {showScanner && (
+        <BarcodeScannerModal
+          onScanSuccess={(code) => {
+            setSearchQuery(code);
+            setShowScanner(false);
+          }}
+          onClose={() => setShowScanner(false)}
         />
       )}
 
