@@ -143,9 +143,19 @@ export async function getOrderByTrackingCode(code: string): Promise<Order | null
 }
 
 export async function saveOrder(order: Order): Promise<boolean> {
+  const normalizedOrder: Order = {
+    ...order,
+    service_type: order.service_type || 'BUY_FOR_YOU',
+    delivery_province: order.delivery_province || '',
+    selling_price_lak: order.selling_price_lak ?? 0,
+    actual_shipping_cost_lak: order.actual_shipping_cost_lak ?? 0,
+    profit_lak: order.profit_lak ?? 0,
+    updated_at: new Date().toISOString(),
+  };
+
   if (isSupabaseConfigured && supabase) {
     try {
-      const { error } = await supabase.from('orders').upsert(order);
+      const { error } = await supabase.from('orders').upsert(normalizedOrder);
       if (error) console.error('Supabase upsert error:', error);
     } catch (e) {
       console.warn('Supabase save failed, saving locally:', e);
@@ -156,9 +166,9 @@ export async function saveOrder(order: Order): Promise<boolean> {
     const orders = await getOrders();
     const index = orders.findIndex((o) => o.id === order.id || o.tracking_code === order.tracking_code);
     if (index >= 0) {
-      orders[index] = { ...order, updated_at: new Date().toISOString() };
+      orders[index] = normalizedOrder;
     } else {
-      orders.unshift({ ...order, created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
+      orders.unshift({ ...normalizedOrder, created_at: order.created_at || new Date().toISOString() });
     }
     localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
   }
