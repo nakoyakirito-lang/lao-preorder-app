@@ -20,95 +20,7 @@ export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
   updated_at: new Date().toISOString(),
 };
 
-export const SEED_ORDERS: Order[] = [
-  {
-    id: 'ord-101',
-    tracking_code: 'LA-CN-260901-001',
-    service_type: 'BUY_FOR_YOU',
-    route: 'CHINA_LAOS',
-    foreign_tracking_no: 'SF1983748293CN',
-    customer_name: 'ທ້າວ ສົມສັກ ວົງສາ',
-    customer_phone: '020 5512 3456',
-    customer_social_url: 'fb.com/somsak.lao',
-    customer_social_image: '',
-    delivery_provider: 'RungAroun',
-    delivery_branch: 'ຮຸ່ງອາລຸນ ສາຂາ ດົງໂດກ (ມຊ)',
-    product_name: 'ເກີບຜ້າໃບ Nike Dunk Low Retro (ສີຂາວ-ດຳ)',
-    product_image_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60',
-    order_date: '2026-09-01',
-    origin_currency: 'CNY',
-    origin_cost: 299,
-    exchange_rate: 3200,
-    product_cost_lak: 956800,
-    shipping_cost_lak: 45000,
-    service_fee_lak: 0,
-    total_cost_lak: 1001800,
-    deposit_lak: 500000,
-    balance_due_lak: 501800,
-    status: 'arrived_laos',
-    arrived_date: '2026-09-02',
-    weight_kg: 1.2,
-    notes: 'ເຄື່ອງຮອດແລ້ວ ພ້ອມສົ່ງສາຂາດົງໂດກ',
-    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'ord-102',
-    tracking_code: 'LA-TH-260901-002',
-    service_type: 'PREORDER',
-    route: 'THAI_LAOS',
-    foreign_tracking_no: 'TH01928374TH',
-    customer_name: 'ນາງ ມະນີວອນ ແສງດາວົງ',
-    customer_phone: '020 9988 7766',
-    customer_social_url: 'wa.me/8562099887766',
-    customer_social_image: '',
-    delivery_provider: 'Anousith',
-    delivery_branch: 'ອານຸສິດ ສາຂາ ປາກເຊ',
-    product_name: 'ເສື້ອກັນໜາວ Cardigan ໄໝພົມເກົາຫຼີ (3 ໂຕ)',
-    product_image_url: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500&auto=format&fit=crop&q=60',
-    order_date: '2026-09-01',
-    origin_currency: 'THB',
-    origin_cost: 850,
-    exchange_rate: 640,
-    product_cost_lak: 544000,
-    shipping_cost_lak: 0,
-    service_fee_lak: 0,
-    total_cost_lak: 544000,
-    deposit_lak: 200000,
-    balance_due_lak: 344000,
-    status: 'in_transit',
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'ord-103',
-    tracking_code: 'LA-CN-260902-003',
-    service_type: 'BUY_FOR_YOU',
-    route: 'CHINA_LAOS',
-    foreign_tracking_no: 'ZT7829102934CN',
-    customer_name: 'ທ້າວ ບຸນທັນ ຈັນທະມາລີ',
-    customer_phone: '020 2233 4455',
-    customer_social_url: 'wa.me/8562022334455',
-    customer_social_image: '',
-    delivery_provider: 'HAL',
-    delivery_branch: 'HAL ສາຂາ ໜອງບອນ',
-    product_name: 'ໂຄມໄຟ Smart LED RGB ສຳລັບຫ້ອງນອນ',
-    product_image_url: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&auto=format&fit=crop&q=60',
-    order_date: '2026-09-02',
-    origin_currency: 'CNY',
-    origin_cost: 120,
-    exchange_rate: 3200,
-    product_cost_lak: 384000,
-    shipping_cost_lak: 0,
-    service_fee_lak: 0,
-    total_cost_lak: 384000,
-    deposit_lak: 384000,
-    balance_due_lak: 0,
-    status: 'ordered',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-];
+export const SEED_ORDERS: Order[] = [];
 
 // Data service helpers
 export async function getOrders(): Promise<Order[]> {
@@ -118,23 +30,37 @@ export async function getOrders(): Promise<Order[]> {
         .from('orders')
         .select('*')
         .order('created_at', { ascending: false });
-      if (!error && data && data.length > 0) return data as Order[];
+      if (!error && data) return data as Order[];
     } catch (e) {
       console.warn('Supabase fetch failed, falling back to local storage', e);
     }
   }
 
-  if (typeof window === 'undefined') return SEED_ORDERS;
+  if (typeof window === 'undefined') return [];
   const raw = localStorage.getItem(ORDERS_STORAGE_KEY);
   if (!raw) {
-    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(SEED_ORDERS));
-    return SEED_ORDERS;
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify([]));
+    return [];
   }
   try {
     return JSON.parse(raw);
   } catch {
-    return SEED_ORDERS;
+    return [];
   }
+}
+
+export async function clearAllOrders(): Promise<boolean> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      await supabase.from('orders').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    } catch (e) {
+      console.error('Supabase clear failed:', e);
+    }
+  }
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify([]));
+  }
+  return true;
 }
 
 export async function getOrderByTrackingCode(code: string): Promise<Order | null> {

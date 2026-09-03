@@ -9,6 +9,7 @@ import {
   saveExchangeRates,
   getShopSettings,
   saveShopSettings,
+  clearAllOrders,
   DEFAULT_EXCHANGE_RATES,
   DEFAULT_SHOP_SETTINGS,
   SEED_ORDERS,
@@ -26,6 +27,7 @@ import {
   RefreshCw,
   Sparkles,
   DollarSign,
+  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -64,10 +66,11 @@ export default function SettingsPage() {
     setTimeout(() => setSavedSuccess(false), 2500);
   };
 
-  const handleResetData = () => {
-    if (confirm('ທ່ານຕ້ອງການໂຫຼດຂໍ້ມູນຕົວຢ່າງທົດສອບໃໝ່ທັງໝົດແທ້ບໍ່?')) {
-      localStorage.clear();
-      window.location.reload();
+  const handleClearOrders = async () => {
+    if (confirm('ທ່ານຕ້ອງການລຶບຂໍ້ມູນອໍເດີທັງໝົດແທ້ບໍ່? (ຂໍ້ມູນຈະຖືກລຶບອອກຈາກ Cloud Database & ເຄື່ອງນີ້)')) {
+      await clearAllOrders();
+      alert('ລຶບຂໍ້ມູນອໍເດີທັງໝົດຮຽບຮ້ອຍແລ້ວ!');
+      window.location.href = '/parcels';
     }
   };
 
@@ -284,15 +287,15 @@ export default function SettingsPage() {
           </button>
         </form>
 
-        {/* Reset / Load Sample Data */}
+        {/* Clear All Orders */}
         <div className="pt-2">
           <button
             type="button"
-            onClick={handleResetData}
-            className="w-full py-2.5 px-3 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-red-100 transition-colors"
+            onClick={handleClearOrders}
+            className="w-full py-2.5 px-3 rounded-xl border border-red-300 bg-red-50 text-red-700 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-red-100 hover:border-red-400 transition-colors shadow-sm"
           >
-            <RefreshCw size={14} />
-            ຣີເຊັດ & ໂຫຼດຂໍ້ມູນຕົວຢ່າງທົດສອບໃໝ່
+            <Trash2 size={14} />
+            ລຶບຂໍ້ມູນອໍເດີທັງໝົດ (ເລີ່ມຕົ້ນລະບົບໃໝ່)
           </button>
         </div>
       </div>
