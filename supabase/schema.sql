@@ -8,6 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS orders (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   tracking_code VARCHAR(50) UNIQUE NOT NULL,
+  service_type VARCHAR(30) NOT NULL DEFAULT 'BUY_FOR_YOU' CHECK (service_type IN ('BUY_FOR_YOU', 'PREORDER')),
   route VARCHAR(20) NOT NULL CHECK (route IN ('CHINA_LAOS', 'THAI_LAOS')),
   foreign_tracking_no VARCHAR(100) DEFAULT '',
   
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS orders (
   customer_social_url TEXT DEFAULT '',
   customer_social_image TEXT DEFAULT '',
   delivery_provider VARCHAR(100) NOT NULL DEFAULT 'RungAroun',
+  delivery_province VARCHAR(100) DEFAULT '',
   delivery_branch VARCHAR(255) NOT NULL DEFAULT '',
   
   -- Product Details
@@ -30,13 +32,16 @@ CREATE TABLE IF NOT EXISTS orders (
   origin_cost NUMERIC(14, 2) NOT NULL DEFAULT 0,
   exchange_rate NUMERIC(14, 4) NOT NULL DEFAULT 1,
   product_cost_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
+  selling_price_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
   
   -- Shipping & Final Cost (Added when arrived in Laos)
   shipping_cost_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
+  actual_shipping_cost_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
   service_fee_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
   total_cost_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
   deposit_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
   balance_due_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
+  profit_lak NUMERIC(16, 0) NOT NULL DEFAULT 0,
   
   -- Status & Logistics Tracking
   status VARCHAR(30) NOT NULL DEFAULT 'ordered' CHECK (
