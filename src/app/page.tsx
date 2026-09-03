@@ -59,7 +59,7 @@ export default function HomePage() {
   const recentOrders = filteredOrders.slice(0, 5);
 
   return (
-    <main className="min-h-screen bg-background text-slate-100 flex flex-col">
+    <main className="min-h-screen bg-slate-50 text-slate-900 flex flex-col pb-20">
       <Header
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -77,14 +77,14 @@ export default function HomePage() {
         <div className="px-4 pt-2">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-neon animate-pulse"></span>
-              <h2 className="text-sm font-bold text-slate-100">
+              <span className="w-2.5 h-2.5 rounded-full bg-slate-900 animate-pulse"></span>
+              <h2 className="text-sm font-bold text-slate-900">
                 {searchQuery ? `ຜົນການຄົ້ນຫາ (${filteredOrders.length})` : 'ພັດສະດຸຫຼ້າສຸດ'}
               </h2>
             </div>
             <Link
               href="/parcels"
-              className="text-xs font-bold text-neon hover:underline flex items-center gap-0.5"
+              className="text-xs font-bold text-slate-700 hover:text-slate-900 hover:underline flex items-center gap-0.5"
             >
               ເບິ່ງທັງໝົດ <ChevronRight size={14} />
             </Link>
@@ -92,14 +92,14 @@ export default function HomePage() {
 
           {loading ? (
             <div className="py-12 text-center text-slate-500 text-xs flex flex-col items-center justify-center gap-2">
-              <div className="w-6 h-6 border-2 border-neon border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
               <span>ກຳລັງໂຫຼດຂໍ້ມູນ...</span>
             </div>
           ) : recentOrders.length === 0 ? (
-            <div className="py-12 bg-surface/60 rounded-2xl border border-slate-800 text-center text-slate-400 text-xs px-4">
-              <Package size={32} className="mx-auto text-slate-600 mb-2" />
-              <p className="font-semibold text-slate-300">ບໍ່ພົບລາຍການພັດສະດຸ</p>
-              <p className="text-[11px] text-slate-500 mt-1">
+            <div className="py-12 bg-white rounded-2xl border border-slate-200 text-center text-slate-500 text-xs px-4 shadow-sm">
+              <Package size={32} className="mx-auto text-slate-400 mb-2" />
+              <p className="font-semibold text-slate-700">ບໍ່ພົບລາຍການພັດສະດຸ</p>
+              <p className="text-[11px] text-slate-400 mt-1">
                 {searchQuery ? 'ລອງປ່ຽນຄຳຄົ້ນຫາໃໝ່' : 'ກົດປຸ່ມ + ເພື່ອສັ່ງພຣີອໍເດີທຳອິດ'}
               </p>
             </div>

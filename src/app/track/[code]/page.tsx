@@ -62,26 +62,26 @@ export default function PublicTrackingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background text-slate-100 flex flex-col items-center justify-center p-4">
-        <div className="w-8 h-8 border-2 border-neon border-t-transparent rounded-full animate-spin mb-3"></div>
-        <p className="text-xs text-slate-400">ກຳລັງກວດສອບສະຖານະພັດສະດຸ...</p>
+      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col items-center justify-center p-4">
+        <div className="w-8 h-8 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mb-3"></div>
+        <p className="text-xs text-slate-500">ກຳລັງກວດສອບສະຖານະພັດສະດຸ...</p>
       </div>
     );
   }
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-background text-slate-100 flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-400 border border-red-500/30 flex items-center justify-center mb-3">
+      <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-700 border border-red-200 flex items-center justify-center mb-3">
           <Package size={28} />
         </div>
-        <h1 className="text-base font-bold text-slate-100">ບໍ່ພົບຂໍ້ມູນພັດສະດຸ</h1>
-        <p className="text-xs text-slate-400 mt-1 max-w-xs">
-          ກະລຸນາກວດສອບເລກຕິດຕາມ <span className="font-mono text-neon">{trackingCode}</span> ຄືນໃໝ່
+        <h1 className="text-base font-bold text-slate-900">ບໍ່ພົບຂໍ້ມູນພັດສະດຸ</h1>
+        <p className="text-xs text-slate-500 mt-1 max-w-xs">
+          ກະລຸນາກວດສອບເລກຕິດຕາມ <span className="font-mono text-slate-900 font-bold">{trackingCode}</span> ຄືນໃໝ່
         </p>
         <button
           onClick={() => router.back()}
-          className="mt-4 px-4 py-2 rounded-xl bg-surface border border-slate-700 text-xs font-bold text-slate-200 hover:text-neon"
+          className="mt-4 px-4 py-2 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-800 hover:text-black shadow-sm"
         >
           ← ກັບຄືນ
         </button>
@@ -92,23 +92,23 @@ export default function PublicTrackingPage() {
   const isChina = order.route === 'CHINA_LAOS';
 
   return (
-    <main className="min-h-screen bg-background text-slate-100 flex flex-col pb-12">
+    <main className="min-h-screen bg-slate-50 text-slate-900 flex flex-col pb-12">
       {/* Brand Header with Back Button */}
-      <div className="bg-slate-900/90 border-b border-slate-800 p-4 relative flex items-center justify-between">
+      <div className="bg-white border-b border-slate-200 p-4 relative flex items-center justify-between shadow-sm">
         <button
           onClick={() => router.back()}
-          className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
+          className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-900 hover:border-slate-900 transition-colors"
           title="ຍ້ອນກັບ"
         >
           <ArrowLeft size={16} />
         </button>
 
         <div className="text-center flex-1 pr-8">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neon/10 border border-neon/30 text-neon text-[10px] font-bold mb-0.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-300 text-slate-800 text-[10px] font-bold mb-0.5">
             <ShieldCheck size={12} />
             ລະບົບກວດສອບສະຖານະພັດສະດຸ
           </div>
-          <h1 className="text-sm sm:text-base font-black text-slate-100 uppercase tracking-tight">
+          <h1 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight">
             {settings.shop_name}
           </h1>
         </div>
@@ -116,13 +116,13 @@ export default function PublicTrackingPage() {
 
       <div className="p-4 space-y-4">
         {/* Status Card */}
-        <div className="p-4 rounded-2xl bg-surface border border-slate-800 space-y-3">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
             <span
               className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${
                 isChina
-                  ? 'bg-red-500/10 text-red-400 border-red-500/30'
-                  : 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                  ? 'bg-red-50 text-red-700 border-red-200'
+                  : 'bg-blue-50 text-blue-700 border-blue-200'
               }`}
             >
               {isChina ? '🇨🇳 ຈີນ ➔ ລາວ' : '🇹🇭 ໄທ ➔ ລາວ'}
@@ -131,18 +131,18 @@ export default function PublicTrackingPage() {
           </div>
 
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase font-mono">
+            <span className="text-[10px] text-slate-500 block uppercase font-mono">
               ເລກຕິດຕາມພັດສະດຸ:
             </span>
-            <h2 className="text-lg font-mono font-black text-neon neon-glow-text">
+            <h2 className="text-lg font-mono font-black text-slate-900">
               {order.tracking_code}
             </h2>
           </div>
 
           {/* Product Details with Image */}
-          <div className="pt-3 border-t border-slate-800/80 flex gap-3 items-center">
+          <div className="pt-3 border-t border-slate-100 flex gap-3 items-center">
             {order.product_image_url && (
-              <div className="w-16 h-16 rounded-xl bg-slate-900 border border-slate-700 overflow-hidden flex-shrink-0">
+              <div className="w-16 h-16 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
                 <img
                   src={order.product_image_url}
                   alt={order.product_name}
@@ -151,10 +151,10 @@ export default function PublicTrackingPage() {
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-2">
+              <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2">
                 {order.product_name}
               </h3>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[11px] text-slate-500 mt-0.5">
                 ວັນທີສັ່ງຊື້: {order.order_date}
               </p>
               {order.product_url && (
@@ -162,7 +162,7 @@ export default function PublicTrackingPage() {
                   href={order.product_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-[11px] text-sky-400 hover:underline mt-1 font-semibold"
+                  className="inline-flex items-center gap-1 text-[11px] text-blue-600 hover:underline mt-1 font-semibold"
                 >
                   🔗 ເບິ່ງລິ້ງສິນຄ້າຕົ້ນທາງ
                 </a>
@@ -172,8 +172,8 @@ export default function PublicTrackingPage() {
         </div>
 
         {/* Timeline Progress */}
-        <div className="p-4 rounded-2xl bg-surface border border-slate-800 space-y-2">
-          <h3 className="text-xs font-bold text-slate-300">📍 ສະຖານະການຈັດສົ່ງ (Timeline)</h3>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-sm">
+          <h3 className="text-xs font-bold text-slate-900">📍 ສະຖານະການຈັດສົ່ງ (Timeline)</h3>
           <TrackingTimeline
             status={order.status}
             orderDate={order.order_date}
@@ -182,51 +182,55 @@ export default function PublicTrackingPage() {
         </div>
 
         {/* Destination Info */}
-        <div className="p-4 rounded-2xl bg-surface border border-slate-800 space-y-2">
-          <h3 className="text-xs font-bold text-slate-300">📦 ຂໍ້ມູນຜູ້ຮັບ & ຈຸດຈັດສົ່ງໃນລາວ</h3>
-          <div className="p-3 bg-background rounded-xl border border-slate-800 text-xs space-y-1">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-sm">
+          <h3 className="text-xs font-bold text-slate-900">📦 ຂໍ້ມູນຜູ້ຮັບ & ຈຸດຈັດສົ່ງໃນລາວ</h3>
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
             <div className="flex justify-between">
-              <span className="text-slate-400">ຊື່ຜູ້ຮັບ:</span>
-              <span className="font-bold text-slate-200">{order.customer_name}</span>
+              <span className="text-slate-500">ຊື່ຜູ້ຮັບ:</span>
+              <span className="font-bold text-slate-900">{order.customer_name}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">ເບີໂທ:</span>
-              <span className="font-semibold text-slate-200">{order.customer_phone}</span>
+              <span className="text-slate-500">ເບີໂທ:</span>
+              <span className="font-semibold text-slate-900">{order.customer_phone}</span>
             </div>
-            <div className="flex justify-between pt-1 border-t border-slate-800/80">
-              <span className="text-slate-400">ຂົນສົ່ງປາຍທາງ:</span>
-              <span className="font-bold text-neon">
-                {order.delivery_provider} ({order.delivery_branch || 'ສາຂາຫຼັກ'})
+            <div className="flex justify-between pt-1 border-t border-slate-200">
+              <span className="text-slate-500">ຂົນສົ່ງປາຍທາງ:</span>
+              <span className="font-bold text-slate-900">
+                {order.delivery_provider} ({order.delivery_province ? `${order.delivery_province} - ` : ''}{order.delivery_branch || 'ສາຂາຫຼັກ'})
               </span>
             </div>
           </div>
         </div>
 
         {/* Cost Breakdown */}
-        <div className="p-4 rounded-2xl bg-surface border border-slate-800 space-y-2.5">
-          <h3 className="text-xs font-bold text-slate-300">💰 ລາຍລະອຽດຄ່າໃຊ້ຈ່າຍ (ເງິນກີບ)</h3>
-          <div className="p-3 bg-background rounded-xl border border-slate-800 text-xs space-y-1.5">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-sm">
+          <h3 className="text-xs font-bold text-slate-900">💰 ລາຍລະອຽດຄ່າໃຊ້ຈ່າຍ (ເງິນກີບ)</h3>
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1.5">
             <div className="flex justify-between">
-              <span className="text-slate-400">1. ຄ່າສິນຄ້າ:</span>
-              <span className="font-semibold text-slate-200">{formatLAK(order.product_cost_lak)}</span>
+              <span className="text-slate-500">
+                {order.service_type === 'PREORDER' ? '1. ລາຄາຂາຍ:' : '1. ຄ່າສິນຄ້າ:'}
+              </span>
+              <span className="font-semibold text-slate-900">
+                {formatLAK(order.selling_price_lak || order.product_cost_lak)}
+              </span>
             </div>
             {order.shipping_cost_lak > 0 ? (
               <div className="flex justify-between">
-                <span className="text-slate-400">2. ຄ່າຂົນສົ່ງມາລາວ:</span>
-                <span className="font-semibold text-slate-200">{formatLAK(order.shipping_cost_lak)}</span>
+                <span className="text-slate-500">2. ຄ່າຂົນສົ່ງມາລາວ:</span>
+                <span className="font-semibold text-blue-600">{formatLAK(order.shipping_cost_lak)}</span>
               </div>
             ) : (
-              <div className="flex justify-between text-slate-500">
+              <div className="flex justify-between text-slate-400">
                 <span>2. ຄ່າຂົນສົ່ງມາລາວ:</span>
                 <span>(ຄິດໄລ່ເມື່ອຮອດສາງລາວ)</span>
               </div>
             )}
-            <div className="flex justify-between pt-1 border-t border-slate-800 font-semibold text-slate-200">
+            <div className="flex justify-between pt-1 border-t border-slate-200 font-semibold text-slate-900">
               <span>ຍອດລວມທັງໝົດ:</span>
               <span>{formatLAK(order.total_cost_lak)}</span>
             </div>
             {order.deposit_lak > 0 && (
-              <div className="flex justify-between text-emerald-400">
+              <div className="flex justify-between text-emerald-600 font-medium">
                 <span>ຫັກມັດຈຳທີ່ຈ່າຍແລ້ວ:</span>
                 <span>-{formatLAK(order.deposit_lak)}</span>
               </div>
@@ -234,16 +238,16 @@ export default function PublicTrackingPage() {
           </div>
 
           {/* Prominent COD Amount */}
-          <div className="p-3.5 bg-neon/10 border border-neon rounded-xl flex items-center justify-between shadow-neon-sm">
+          <div className="p-3.5 bg-slate-900 text-white rounded-xl flex items-center justify-between shadow-md">
             <div>
-              <span className="text-[10px] font-bold text-neon uppercase">
+              <span className="text-[10px] font-bold text-slate-300 uppercase">
                 ຍອດທີ່ຕ້ອງຊຳລະ / COD ປາຍທາງ
               </span>
-              <div className="text-xl font-black text-neon neon-glow-text">
+              <div className="text-xl font-black text-white">
                 {formatLAK(order.balance_due_lak)}
               </div>
             </div>
-            <div className="text-right text-[11px] font-bold text-slate-300">
+            <div className="text-right text-[11px] font-bold text-slate-200">
               {order.balance_due_lak === 0 ? 'ຊຳລະຄົບແລ້ວ ✅' : 'ກຽມຈ່າຍຕອນຮັບເຄື່ອງ'}
             </div>
           </div>
@@ -253,7 +257,7 @@ export default function PublicTrackingPage() {
         <div className="flex gap-2">
           <button
             onClick={handleShare}
-            className="flex-1 py-3 px-4 bg-surface border border-slate-700 hover:border-neon rounded-xl text-xs font-bold text-slate-200 flex items-center justify-center gap-1.5 transition-all"
+            className="flex-1 py-3 px-4 bg-white border border-slate-300 hover:border-slate-900 rounded-xl text-xs font-bold text-slate-800 flex items-center justify-center gap-1.5 transition-all shadow-sm"
           >
             {copied ? <Check size={15} /> : <Share2 size={15} />}
             {copied ? 'ກັອບປີ້ລິ້ງແລ້ວ!' : 'ແຊຣ໌ລິ້ງຕິດຕາມ'}
@@ -264,7 +268,7 @@ export default function PublicTrackingPage() {
               href={`https://wa.me/${settings.phone.replace(/[^0-9]/g, '')}`}
               target="_blank"
               rel="noreferrer"
-              className="flex-1 py-3 px-4 bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-600/30 transition-all"
+              className="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all"
             >
               <MessageCircle size={15} />
               ຕິດຕໍ່ຮ້ານຄ້າ

@@ -70,24 +70,24 @@ export default function WarehousePage() {
   });
 
   return (
-    <main className="min-h-screen bg-background text-slate-100 flex flex-col pb-24">
+    <main className="min-h-screen bg-slate-50 text-slate-900 flex flex-col pb-24">
       {/* Top Bar */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={() => router.back()}
-            className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
+            className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-900 hover:border-slate-900 transition-colors"
             title="ຍ້ອນກັບ"
           >
             <ArrowLeft size={16} />
           </button>
           <div>
-            <h1 className="text-base font-bold text-slate-100 flex items-center gap-1.5">
-              <Warehouse size={18} className="text-neon" />
+            <h1 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
+              <Warehouse size={18} className="text-slate-900" />
               ເຊັກອິນເຄື່ອງຮອດສາງລາວ
             </h1>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-slate-500">
               ປ້ອນຄ່າຂົນສົ່ງມາລາວ (ກີບ LAK) & ອອກບິນ
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function WarehousePage() {
         {/* Top Scan Shortcut Button */}
         <button
           onClick={() => setShowScanner(true)}
-          className="py-1.5 px-3 rounded-xl bg-neon/15 border border-neon/40 text-neon text-xs font-bold flex items-center gap-1.5 hover:bg-neon hover:text-black shadow-neon-sm transition-all"
+          className="py-1.5 px-3 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-black shadow-sm transition-all"
         >
           <Camera size={15} />
           <span>ສະແກນ</span>
@@ -112,13 +112,13 @@ export default function WarehousePage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="ສະແກນ ຫຼື ຄົ້ນຫາເລກແທຣັກກິ້ງ / ຊື່ລູກຄ້າ..."
-            className="w-full pl-10 pr-20 py-2.5 bg-surface border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-neon"
+            className="w-full pl-10 pr-20 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 shadow-sm"
           />
           <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="w-6 h-6 text-slate-400 hover:text-slate-200 text-xs flex items-center justify-center"
+                className="w-6 h-6 text-slate-400 hover:text-slate-600 text-xs flex items-center justify-center"
               >
                 ✕
               </button>
@@ -126,7 +126,7 @@ export default function WarehousePage() {
             <button
               type="button"
               onClick={() => setShowScanner(true)}
-              className="h-8 px-2.5 rounded-lg bg-neon text-black font-extrabold text-xs flex items-center gap-1 shadow-neon-sm hover:scale-105 active:scale-95 transition-all"
+              className="h-8 px-2.5 rounded-lg bg-slate-900 text-white font-extrabold text-xs flex items-center gap-1 shadow-sm hover:bg-black transition-all"
               title="ເປີດກ້ອງສະແກນບາໂຄ້ດ"
             >
               <Camera size={14} />
@@ -136,17 +136,17 @@ export default function WarehousePage() {
         </div>
 
         {/* Tab Filters */}
-        <div className="grid grid-cols-2 p-1 bg-surface rounded-xl border border-slate-800">
+        <div className="grid grid-cols-2 p-1 bg-slate-200/70 rounded-xl border border-slate-300">
           <button
             onClick={() => setFilterTab('pending_shipping')}
             className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
               filterTab === 'pending_shipping'
-                ? 'bg-neon text-black shadow-neon-sm'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <span>⏳ ລໍຖ້າປ້ອນຄ່າສົ່ງ</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/30 font-extrabold">
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-800 font-extrabold">
               {pendingShippingOrders.length}
             </span>
           </button>
@@ -155,12 +155,12 @@ export default function WarehousePage() {
             onClick={() => setFilterTab('arrived')}
             className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
               filterTab === 'arrived'
-                ? 'bg-neon text-black shadow-neon-sm'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <span>✅ ຮອດລາວແລ້ວ</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/30 font-extrabold">
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-800 font-extrabold">
               {arrivedOrders.length}
             </span>
           </button>
@@ -170,9 +170,9 @@ export default function WarehousePage() {
         {loading ? (
           <div className="py-12 text-center text-slate-500 text-xs">ກຳລັງໂຫຼດ...</div>
         ) : displayedOrders.length === 0 ? (
-          <div className="py-12 bg-surface/50 rounded-2xl border border-slate-800 text-center text-slate-400 text-xs px-4">
-            <CheckCircle2 size={32} className="mx-auto text-slate-600 mb-2" />
-            <p className="font-semibold text-slate-300">ບໍ່ມີພັດສະດຸໃນໝວດນີ້</p>
+          <div className="py-12 bg-white rounded-2xl border border-slate-200 text-center text-slate-500 text-xs px-4 shadow-sm">
+            <CheckCircle2 size={32} className="mx-auto text-slate-400 mb-2" />
+            <p className="font-semibold text-slate-700">ບໍ່ມີພັດສະດຸໃນໝວດນີ້</p>
           </div>
         ) : (
           <div className="space-y-2.5">

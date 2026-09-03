@@ -12,7 +12,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#080c14",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -21,13 +21,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="lo" className="dark">
+    <html lang="lo">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="bg-background text-slate-100 min-h-screen antialiased flex flex-col font-lao">
-        <div className="flex-1 w-full max-w-lg mx-auto bg-background min-h-screen relative shadow-2xl border-x border-slate-800/60 pb-24">
+      <body className="bg-slate-100 text-slate-900 min-h-screen antialiased flex flex-col font-lao">
+        <div className="flex-1 w-full max-w-lg mx-auto bg-slate-50 min-h-screen relative shadow-sm border-x border-slate-200 pb-24">
           {children}
         </div>
       </body>

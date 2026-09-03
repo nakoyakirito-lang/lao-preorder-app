@@ -64,14 +64,14 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`relative rounded-2xl bg-surface border transition-all overflow-hidden cursor-pointer group ${
+      className={`relative rounded-2xl bg-white border transition-all overflow-hidden cursor-pointer group ${
         selected
-          ? 'border-neon ring-1 ring-neon shadow-neon-sm bg-surface'
-          : 'border-slate-800/90 hover:border-neon/60 hover:shadow-neon-sm'
+          ? 'border-slate-900 ring-2 ring-slate-900 shadow-md'
+          : 'border-slate-200 hover:border-slate-400 hover:shadow-md'
       }`}
     >
       {/* Header Info Bar */}
-      <div className="flex items-center justify-between p-3 border-b border-slate-800/80 bg-slate-900/40">
+      <div className="flex items-center justify-between p-3 border-b border-slate-100 bg-slate-50">
         <div className="flex items-center gap-2">
           {selectable && (
             <input
@@ -79,19 +79,19 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
               checked={selected}
               onClick={(e) => e.stopPropagation()}
               onChange={() => onSelect && onSelect(order.id)}
-              className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-neon focus:ring-neon cursor-pointer accent-neon"
+              className="w-4 h-4 rounded border-slate-300 bg-white text-slate-900 focus:ring-slate-900 cursor-pointer accent-slate-900"
             />
           )}
           <span
             className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
               isChina
-                ? 'bg-red-500/10 text-red-400 border-red-500/30'
-                : 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                ? 'bg-red-50 text-red-700 border-red-200'
+                : 'bg-blue-50 text-blue-700 border-blue-200'
             }`}
           >
             {isChina ? '🇨🇳 ຈີນ ➔ ລາວ' : '🇹🇭 ໄທ ➔ ລາວ'}
           </span>
-          <span className="text-xs font-mono font-bold text-slate-300">
+          <span className="text-xs font-mono font-bold text-slate-800">
             {order.tracking_code}
           </span>
         </div>
@@ -109,7 +109,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
                 onCheckIn(order);
               }
             }}
-            className="text-[11px] font-bold py-1 px-2 rounded-lg bg-background border border-slate-700 text-slate-200 focus:border-neon focus:outline-none cursor-pointer"
+            className="text-[11px] font-bold py-1 px-2 rounded-lg bg-white border border-slate-300 text-slate-800 focus:border-slate-900 focus:outline-none cursor-pointer shadow-sm"
           >
             <option value="ordered">📦 ສັ່ງຊື້ແລ້ວ</option>
             <option value="in_transit">🚚 ກຳລັງມາລາວ</option>
@@ -124,7 +124,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
       {/* Main Card Body (Clickable to view/edit) */}
       <div className="p-3.5 flex gap-3">
         {/* Product / Social Image */}
-        <div className="relative w-20 h-20 rounded-xl bg-slate-800/80 border border-slate-700/80 overflow-hidden flex-shrink-0 flex items-center justify-center">
+        <div className="relative w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center">
           {order.product_image_url ? (
             <img
               src={order.product_image_url}
@@ -132,11 +132,11 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
             />
           ) : (
-            <Tag size={24} className="text-slate-500" />
+            <Tag size={24} className="text-slate-400" />
           )}
 
           {order.customer_social_image && (
-            <div className="absolute bottom-1 right-1 w-6 h-6 rounded-full border-2 border-background overflow-hidden shadow-sm">
+            <div className="absolute bottom-1 right-1 w-6 h-6 rounded-full border-2 border-white overflow-hidden shadow-sm">
               <img
                 src={order.customer_social_image}
                 alt="Customer Profile"
@@ -148,41 +148,42 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
 
         {/* Info & Customer Details */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-xs sm:text-sm font-bold text-slate-100 line-clamp-1 group-hover:text-neon transition-colors">
+          <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1 group-hover:text-black transition-colors">
             {order.product_name}
           </h3>
 
-          <div className="mt-1 flex items-center gap-1.5 text-slate-300 text-xs font-medium">
+          <div className="mt-1 flex items-center gap-1.5 text-slate-700 text-xs font-medium">
             <span className="text-slate-400">👤</span>
-            <span className="font-semibold text-slate-200 truncate">
+            <span className="font-semibold text-slate-900 truncate">
               {order.customer_name}
             </span>
-            <span className="text-[11px] text-slate-400">({order.customer_phone})</span>
+            <span className="text-[11px] text-slate-500">({order.customer_phone})</span>
           </div>
 
-          <div className="mt-1 flex items-center gap-1 text-[11px] text-slate-400">
-            <MapPin size={12} className="text-neon flex-shrink-0" />
+          <div className="mt-1 flex items-center gap-1 text-[11px] text-slate-500">
+            <MapPin size={12} className="text-slate-700 flex-shrink-0" />
             <span className="truncate">
-              {order.delivery_provider}: {order.delivery_branch || 'ສາຂາຫຼັກ'}
+              {order.delivery_provider}: {order.delivery_province ? `${order.delivery_province} - ` : ''}{order.delivery_branch || 'ສາຂາຫຼັກ'}
             </span>
           </div>
 
           {/* Cost Preview */}
-          <div className="mt-2 pt-2 border-t border-slate-800/60 flex items-center justify-between">
+          <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
             <div>
-              <span className="text-[10px] text-slate-400 block">
-                ຕົ້ນທຶນ: {formatLAK(order.product_cost_lak)}
+              <span className="text-[10px] text-slate-500 block">
+                {order.service_type === 'PREORDER' ? 'ລາຄາຂາຍ: ' : 'ຄ່າເຄື່ອງ: '}
+                {formatLAK(order.selling_price_lak || order.product_cost_lak)}
               </span>
               {order.shipping_cost_lak > 0 && (
-                <span className="text-[10px] text-sky-400 block">
+                <span className="text-[10px] text-blue-600 block">
                   + ຄ່າສົ່ງ: {formatLAK(order.shipping_cost_lak)}
                 </span>
               )}
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] text-slate-400 block">ຍອດ COD ຕ້ອງເກັບ</span>
-              <span className="text-xs sm:text-sm font-black text-neon neon-glow-text">
+              <span className="text-[10px] text-slate-500 block">ຍອດ COD ຕ້ອງເກັບ</span>
+              <span className="text-xs sm:text-sm font-black text-slate-900">
                 {formatLAK(order.balance_due_lak)}
               </span>
             </div>
@@ -191,7 +192,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
       </div>
 
       {/* Action Footer Bar */}
-      <div className="px-3 py-2 bg-neutral-900 border-t border-neutral-800 flex items-center justify-between gap-2">
+      <div className="px-3 py-2 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 flex-wrap">
           {/* 1-Click Copy Message */}
           <button
@@ -199,8 +200,8 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
             onClick={handleCopyMessage}
             className={`flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all ${
               copied
-                ? 'bg-neutral-800 text-white border-white'
-                : 'bg-neutral-900 text-neutral-300 border-neutral-700 hover:text-white hover:border-white'
+                ? 'bg-slate-900 text-white border-slate-900'
+                : 'bg-white text-slate-700 border-slate-300 hover:text-slate-900 hover:border-slate-900 shadow-sm'
             }`}
           >
             {copied ? <Check size={13} /> : <Copy size={13} />}
@@ -219,10 +220,10 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className={`flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg transition-all ${
+              className={`flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg transition-all shadow-sm ${
                 order.status === 'arrived_laos'
-                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
-                  : 'bg-neutral-800 text-neutral-300 border border-neutral-700 hover:text-white'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  : 'bg-white text-slate-700 border border-slate-300 hover:text-slate-900'
               }`}
             >
               <MessageCircle size={13} />
@@ -237,7 +238,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-neutral-800 text-neutral-300 border border-neutral-700 hover:text-white"
+              className="flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-white text-slate-700 border border-slate-300 hover:text-slate-900 shadow-sm"
               title="ເບິ່ງລິ້ງສັ່ງສິນຄ້າ"
             >
               <ExternalLink size={13} />
@@ -254,7 +255,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
                 e.stopPropagation();
                 onCheckIn(order);
               }}
-              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-white text-black hover:bg-neutral-200 shadow-sm transition-all"
+              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-slate-900 text-white hover:bg-black shadow-sm transition-all"
             >
               📥 ເຊັກອິນຮອດລາວ
             </button>
@@ -263,7 +264,7 @@ export const ParcelCard: React.FC<ParcelCardProps> = ({
           <Link
             href={`/track/${order.tracking_code}`}
             onClick={(e) => e.stopPropagation()}
-            className="w-7 h-7 rounded-lg bg-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-neutral-700 transition-colors"
+            className="w-7 h-7 rounded-lg bg-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-300 transition-colors"
             title="ເບິ່ງໜ້າຕິດຕາມ"
           >
             <ChevronRight size={16} />

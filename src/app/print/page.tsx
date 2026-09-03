@@ -70,24 +70,24 @@ export default function PrintPage() {
   const selectedOrdersToPrint = orders.filter((o) => selectedIds.includes(o.id));
 
   return (
-    <main className="min-h-screen bg-background text-slate-100 flex flex-col pb-24">
+    <main className="min-h-screen bg-slate-50 text-slate-900 flex flex-col pb-24">
       {/* Top Header (Hidden when printing) */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between no-print">
+      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between no-print shadow-sm">
         <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={() => router.back()}
-            className="w-8 h-8 rounded-lg bg-surface border border-slate-700 flex items-center justify-center text-slate-300 hover:text-neon hover:border-neon transition-colors"
+            className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-900 hover:border-slate-900 transition-colors"
             title="ຍ້ອນກັບ"
           >
             <ArrowLeft size={16} />
           </button>
           <div>
-            <h1 className="text-base font-bold text-slate-100 flex items-center gap-1.5">
-              <Printer size={18} className="text-neon" />
+            <h1 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
+              <Printer size={18} className="text-slate-900" />
               ພິມບິນ Thermal (Batch Print)
             </h1>
-            <p className="text-[11px] text-slate-400">ເລືອກຫຼາຍບິນ & ພິມພ້ອມກັນ</p>
+            <p className="text-[11px] text-slate-500">ເລືອກຫຼາຍບິນ & ພິມພ້ອມກັນ</p>
           </div>
         </div>
 
@@ -95,10 +95,10 @@ export default function PrintPage() {
         <button
           onClick={handlePrint}
           disabled={selectedIds.length === 0}
-          className={`py-2 px-3.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+          className={`py-2 px-3.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
             selectedIds.length > 0
-              ? 'neon-button'
-              : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+              ? 'bg-slate-900 text-white hover:bg-black'
+              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
           }`}
         >
           <Printer size={15} />
@@ -114,12 +114,12 @@ export default function PrintPage() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="ຄົ້ນຫາເລກພັດສະດຸ, ເບີໂທ, ຊື່ລູກຄ້າທີ່ຈະພິມ..."
-          className="w-full px-3.5 py-2 bg-surface border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:border-neon focus:outline-none"
+          className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:outline-none shadow-sm"
         />
 
         {/* Status Filter Scrollbar */}
         <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-300">
+          <label className="text-[11px] font-bold text-slate-700">
             🔍 ຟິວເຕີຕາມສະຖານະພັດສະດຸ (Status Filter):
           </label>
           <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
@@ -134,10 +134,10 @@ export default function PrintPage() {
               <button
                 key={st.id}
                 onClick={() => setFilterStatus(st.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all shadow-sm ${
                   filterStatus === st.id
-                    ? 'bg-neon text-black shadow-neon-sm font-extrabold'
-                    : 'bg-surface border border-slate-800 text-slate-400 hover:text-slate-200'
+                    ? 'bg-slate-900 text-white font-extrabold'
+                    : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {st.label} ({orders.filter((o) => st.id === 'ALL' || o.status === st.id).length})
@@ -147,17 +147,17 @@ export default function PrintPage() {
         </div>
 
         {/* Route Filter & Paper Size Controls */}
-        <div className="p-3 bg-surface rounded-2xl border border-slate-800 space-y-2.5">
+        <div className="p-3 bg-white rounded-2xl border border-slate-200 space-y-2.5 shadow-sm">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-slate-300 font-semibold">ຂະໜາດເຈ້ຍ:</span>
-              <div className="flex bg-background rounded-lg p-0.5 border border-slate-700">
+              <span className="text-[11px] text-slate-700 font-semibold">ຂະໜາດເຈ້ຍ:</span>
+              <div className="flex bg-slate-100 rounded-lg p-0.5 border border-slate-300">
                 <button
                   onClick={() => setPaperWidth('100mm')}
                   className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
                     paperWidth === '100mm'
-                      ? 'bg-neon text-black shadow-neon-sm'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-slate-900 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   100mm (ສະຕິກເກີ)
@@ -166,8 +166,8 @@ export default function PrintPage() {
                   onClick={() => setPaperWidth('80mm')}
                   className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
                     paperWidth === '80mm'
-                      ? 'bg-neon text-black shadow-neon-sm'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-slate-900 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   80mm (ສະລິບ)
@@ -177,7 +177,7 @@ export default function PrintPage() {
 
             <button
               onClick={handleSelectAll}
-              className="text-xs font-bold text-neon hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-slate-900 hover:underline flex items-center gap-1"
             >
               {selectedIds.length === filteredOrders.length && filteredOrders.length > 0 ? (
                 <CheckSquare size={15} />
@@ -192,7 +192,7 @@ export default function PrintPage() {
         {/* Parcel Selector Checklist */}
         <div className="space-y-2">
           <div className="flex justify-between items-center px-1">
-            <span className="text-xs font-bold text-slate-300">
+            <span className="text-xs font-bold text-slate-700">
               ເລືອກລາຍການພັດສະດຸທີ່ຈະພິມ ({selectedIds.length}/{filteredOrders.length}):
             </span>
           </div>
@@ -203,18 +203,18 @@ export default function PrintPage() {
               <div
                 key={ord.id}
                 onClick={() => toggleSelect(ord.id)}
-                className={`p-3 rounded-xl border flex items-center justify-between gap-3 cursor-pointer transition-all ${
+                className={`p-3 rounded-xl border flex items-center justify-between gap-3 cursor-pointer transition-all shadow-sm ${
                   isSelected
-                    ? 'border-neon bg-neon/5'
-                    : 'border-slate-800 bg-surface/80 hover:border-slate-700'
+                    ? 'border-slate-900 ring-2 ring-slate-900 bg-white'
+                    : 'border-slate-200 bg-white hover:border-slate-400'
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
                     className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${
                       isSelected
-                        ? 'border-neon bg-neon text-black'
-                        : 'border-slate-700 bg-slate-800'
+                        ? 'border-slate-900 bg-slate-900 text-white'
+                        : 'border-slate-300 bg-white'
                     }`}
                   >
                     {isSelected && <Check size={13} className="stroke-[3]" />}
@@ -222,24 +222,24 @@ export default function PrintPage() {
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-mono font-bold text-slate-200">
+                      <span className="text-xs font-mono font-bold text-slate-900">
                         {ord.tracking_code}
                       </span>
-                      <span className="text-[10px] text-slate-400">
+                      <span className="text-[10px] text-slate-500">
                         ({ord.route === 'CHINA_LAOS' ? '🇨🇳 ຈີນ' : '🇹🇭 ໄທ'})
                       </span>
                     </div>
-                    <div className="text-xs text-slate-300 font-semibold truncate">
+                    <div className="text-xs text-slate-700 font-semibold truncate">
                       {ord.customer_name} • {ord.product_name}
                     </div>
                   </div>
                 </div>
 
                 <div className="text-right flex-shrink-0">
-                  <div className="text-xs font-black text-neon">
+                  <div className="text-xs font-black text-slate-900">
                     {formatLAK(ord.balance_due_lak)}
                   </div>
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-slate-500">
                     {ord.delivery_provider}
                   </div>
                 </div>
@@ -249,14 +249,14 @@ export default function PrintPage() {
         </div>
 
         {/* Optional Live Print Preview Toggle */}
-        <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-300">
+        <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-700">
             ໃບບິນທີ່ເລືອກ ({selectedOrdersToPrint.length} ໃບ)
           </span>
           <button
             type="button"
             onClick={() => setShowPreview(!showPreview)}
-            className="text-xs font-bold text-neon hover:underline py-1 px-2.5 rounded-lg bg-surface border border-slate-700 flex items-center gap-1 transition-all"
+            className="text-xs font-bold text-slate-900 hover:underline py-1 px-2.5 rounded-lg bg-white border border-slate-300 flex items-center gap-1 transition-all shadow-sm"
           >
             {showPreview ? '🙈 ເຊື່ອງຕົວຢ່າງ' : '👁️ ເບິ່ງຕົວຢ່າງໃບບິນ'}
           </button>
@@ -269,7 +269,7 @@ export default function PrintPage() {
         className={`${showPreview ? 'block' : 'hidden'} print:block p-2 space-y-4`}
       >
         {selectedOrdersToPrint.length === 0 ? (
-          <div className="text-center py-8 text-slate-500 text-xs no-print">
+          <div className="text-center py-8 text-slate-400 text-xs no-print">
             ກະລຸນາຕິກເລືອກພັດສະດຸດ້ານເທິງເພື່ອພິມບິນ
           </div>
         ) : (

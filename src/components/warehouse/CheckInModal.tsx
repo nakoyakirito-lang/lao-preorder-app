@@ -192,19 +192,19 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-      <div className="w-full max-w-md bg-surface border border-slate-700 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="px-4 py-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-neon/15 text-neon flex items-center justify-center border border-neon/30">
+            <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
               <PackageCheck size={18} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-100">
+              <h3 className="text-sm font-bold text-slate-900">
                 ລາຍລະອຽດ & ເຊັກອິນພັດສະດຸ
               </h3>
-              <p className="text-[11px] font-mono text-neon">{order.tracking_code}</p>
+              <p className="text-[11px] font-mono text-slate-600 font-bold">{order.tracking_code}</p>
             </div>
           </div>
 
@@ -213,7 +213,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
             <select
               value={currentStatus}
               onChange={(e) => setCurrentStatus(e.target.value as Order['status'])}
-              className="text-xs font-bold py-1 px-2 rounded-xl bg-background border border-neon text-neon focus:outline-none cursor-pointer shadow-neon-sm"
+              className="text-xs font-bold py-1 px-2 rounded-xl bg-white border border-slate-300 text-slate-900 focus:outline-none cursor-pointer shadow-sm"
             >
               <option value="ordered">📦 ສັ່ງຊື້ແລ້ວ</option>
               <option value="in_transit">🚚 ກຳລັງມາລາວ</option>
@@ -225,7 +225,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
 
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 flex items-center justify-center"
+              className="w-8 h-8 rounded-lg bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center"
             >
               <X size={16} />
             </button>
@@ -233,18 +233,18 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 space-y-3.5 overflow-y-auto flex-1">
+        <div className="p-4 space-y-3.5 overflow-y-auto flex-1 bg-white">
           {/* Service Mode Selector Badge */}
-          <div className="flex items-center justify-between p-2 bg-slate-900/90 rounded-xl border border-slate-800">
-            <span className="text-[11px] font-semibold text-slate-400">ປະເພດບໍລິການ:</span>
+          <div className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-200">
+            <span className="text-[11px] font-semibold text-slate-600">ປະເພດບໍລິການ:</span>
             <div className="flex gap-1">
               <button
                 type="button"
                 onClick={() => setServiceType('BUY_FOR_YOU')}
                 className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
                   serviceType === 'BUY_FOR_YOU'
-                    ? 'bg-neon text-black shadow-neon-sm'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
                 📦 ຮັບສັ່ງເຄື່ອງ (Proxy)
@@ -254,8 +254,8 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                 onClick={() => setServiceType('PREORDER')}
                 className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
                   serviceType === 'PREORDER'
-                    ? 'bg-neon text-black shadow-neon-sm'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-amber-500 text-white shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
                 🏷️ ພຣີອໍເດີ (Retail)
@@ -266,13 +266,13 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
           {/* Images Row: Product Photo & Customer Chat Image */}
           <div className="grid grid-cols-2 gap-2.5">
             {/* Product Image Card */}
-            <div className="p-2 bg-background rounded-2xl border border-slate-800 flex flex-col items-center justify-center relative group">
-              <span className="text-[10px] font-bold text-slate-400 mb-1">
+            <div className="p-2 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col items-center justify-center relative group">
+              <span className="text-[10px] font-bold text-slate-600 mb-1">
                 📸 ຮູບສິນຄ້າ
               </span>
               <div
                 onClick={() => productImageUrl && setPreviewImage(productImageUrl)}
-                className="w-full h-24 rounded-xl bg-slate-900 border border-slate-700 overflow-hidden flex items-center justify-center cursor-pointer hover:border-neon transition-all"
+                className="w-full h-24 rounded-xl bg-white border border-slate-300 overflow-hidden flex items-center justify-center cursor-pointer hover:border-slate-900 transition-all shadow-sm"
               >
                 {productImageUrl ? (
                   <img
@@ -281,19 +281,19 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
                 ) : (
-                  <span className="text-[10px] text-slate-500">ບໍ່ມີຮູບສິນຄ້າ</span>
+                  <span className="text-[10px] text-slate-400">ບໍ່ມີຮູບສິນຄ້າ</span>
                 )}
               </div>
             </div>
 
             {/* Customer Chat / Profile Image Card */}
-            <div className="p-2 bg-background rounded-2xl border border-slate-800 flex flex-col items-center justify-center relative group">
-              <span className="text-[10px] font-bold text-slate-400 mb-1">
+            <div className="p-2 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col items-center justify-center relative group">
+              <span className="text-[10px] font-bold text-slate-600 mb-1">
                 👤 ຮູບແຊັດ/FB ລູກຄ້າ
               </span>
               <div
                 onClick={() => customerSocialImage && setPreviewImage(customerSocialImage)}
-                className="w-full h-24 rounded-xl bg-slate-900 border border-slate-700 overflow-hidden flex items-center justify-center cursor-pointer hover:border-neon transition-all"
+                className="w-full h-24 rounded-xl bg-white border border-slate-300 overflow-hidden flex items-center justify-center cursor-pointer hover:border-slate-900 transition-all shadow-sm"
               >
                 {customerSocialImage ? (
                   <img
@@ -302,22 +302,22 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
                 ) : (
-                  <span className="text-[10px] text-slate-500">ບໍ່ມີຮູບແຊັດ</span>
+                  <span className="text-[10px] text-slate-400">ບໍ່ມີຮູບແຊັດ</span>
                 )}
               </div>
             </div>
           </div>
 
           {/* Quick Snapshot / Edit Toggle */}
-          <div className="p-3 rounded-2xl bg-background border border-slate-800 space-y-2">
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
             <div className="flex items-center justify-between">
-              <div className="text-xs font-bold text-slate-200 truncate">
+              <div className="text-xs font-bold text-slate-900 truncate">
                 {productName}
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditing(!isEditing)}
-                className="text-[11px] font-bold text-neon hover:underline flex items-center gap-1 flex-shrink-0"
+                className="text-[11px] font-bold text-slate-900 hover:underline flex items-center gap-1 flex-shrink-0"
               >
                 <Edit3 size={13} />
                 {isEditing ? 'ປິດແກ້ໄຂ' : 'ແກ້ໄຂລາຍການ'}
@@ -327,50 +327,50 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
 
             {/* Basic Info view when not editing */}
             {!isEditing ? (
-              <div className="text-xs space-y-1 pt-1 border-t border-slate-800">
+              <div className="text-xs space-y-1 pt-1 border-t border-slate-200">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">👤 ລູກຄ້າ:</span>
-                  <span className="font-bold text-slate-200">
+                  <span className="text-slate-500">👤 ລູກຄ້າ:</span>
+                  <span className="font-bold text-slate-900">
                     {customerName} ({customerPhone})
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">📍 ປາຍທາງ:</span>
-                  <span className="text-slate-300">
-                    {deliveryProvider}: {deliveryBranch || 'ສາຂາຫຼັກ'}
+                  <span className="text-slate-500">📍 ປາຍທາງ:</span>
+                  <span className="text-slate-800">
+                    {deliveryProvider}: {deliveryProvince ? `${deliveryProvince} - ` : ''}{deliveryBranch || 'ສາຂາຫຼັກ'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">💵 ຕົ້ນທຶນສິນຄ້າ:</span>
-                  <span className="font-semibold text-slate-100">
+                  <span className="text-slate-500">💵 ຕົ້ນທຶນສິນຄ້າ:</span>
+                  <span className="font-semibold text-slate-900">
                     {formatLAK(effectiveProductCostLAK)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">💳 ມັດຈຳແລ້ວ:</span>
-                  <span className="font-semibold text-emerald-400">
+                  <span className="text-slate-500">💳 ມັດຈຳແລ້ວ:</span>
+                  <span className="font-semibold text-emerald-600">
                     -{formatLAK(effectiveDepositLAK)}
                   </span>
                 </div>
               </div>
             ) : (
               /* Extended Edit Form Fields */
-              <div className="space-y-2.5 pt-2 border-t border-slate-800 text-xs">
+              <div className="space-y-2.5 pt-2 border-t border-slate-200 text-xs">
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       📅 ວັນທີສັ່ງຊື້ (Order Date)
                     </label>
                     <input
                       type="date"
                       value={orderDate}
                       onChange={(e) => setOrderDate(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       ເລກແທຣັກຕົ້ນທາງ (ຈີນ/ໄທ)
                     </label>
                     <input
@@ -378,25 +378,25 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                       value={foreignTrackingNo}
                       onChange={(e) => setForeignTrackingNo(e.target.value)}
                       placeholder="SF... / TH..."
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-300">
+                  <label className="text-[11px] font-semibold text-slate-700">
                     ຊື່ສິນຄ້າ / ລາຍລະອຽດ
                   </label>
                   <input
                     type="text"
                     value={productName}
                     onChange={(e) => setProductName(e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                    className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-300">
+                  <label className="text-[11px] font-semibold text-slate-700">
                     🔗 ລິ້ງສັ່ງສິນຄ້າ (URL)
                   </label>
                   <input
@@ -404,13 +404,13 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                     value={productUrl}
                     onChange={(e) => setProductUrl(e.target.value)}
                     placeholder="https://..."
-                    className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                    className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       ຕົ້ນທຶນສິນຄ້າ (LAK)
                     </label>
                     <input
@@ -418,12 +418,12 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                       step="1000"
                       value={productCostLAK}
                       onChange={(e) => setProductCostLAK(Number(e.target.value))}
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:border-slate-900 focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       ມັດຈຳແລ້ວ (LAK)
                     </label>
                     <input
@@ -431,46 +431,46 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                       step="1000"
                       value={depositLAK}
                       onChange={(e) => setDepositLAK(Number(e.target.value))}
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-emerald-400 focus:border-neon focus:outline-none"
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-emerald-600 focus:border-slate-900 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       ຊື່ລູກຄ້າ
                     </label>
                     <input
                       type="text"
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       ເບີໂທ
                     </label>
                     <input
                       type="tel"
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       ຂົນສົ່ງໃນລາວ
                     </label>
                     <select
                       value={deliveryProvider}
                       onChange={(e) => setDeliveryProvider(e.target.value)}
-                      className="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                     >
                       {DELIVERY_PROVIDERS.map((p) => (
                         <option key={p.id} value={p.id}>
@@ -481,13 +481,13 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       ແຂວງ (Province)
                     </label>
                     <select
                       value={deliveryProvince}
                       onChange={(e) => setDeliveryProvince(e.target.value)}
-                      className="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-neon focus:border-neon focus:outline-none"
+                      className="w-full px-2 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:border-slate-900 focus:outline-none"
                     >
                       {LAO_PROVINCES.map((p) => (
                         <option key={p} value={p}>
@@ -498,14 +498,14 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300">
+                    <label className="text-[11px] font-semibold text-slate-700">
                       ສາຂາ / ບ້ານ / ຈຸດຮັບ
                     </label>
                     <input
                       type="text"
                       value={deliveryBranch}
                       onChange={(e) => setDeliveryBranch(e.target.value)}
-                      className="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                      className="w-full px-2 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -527,12 +527,12 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
           </div>
 
           {/* Dual Shipping Inputs: Charged to Customer vs Actual Cost */}
-          <div className="p-3 bg-surface rounded-2xl border border-slate-800 space-y-3">
+          <div className="p-3 bg-white rounded-2xl border border-slate-200 space-y-3 shadow-sm">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-200">
+              <span className="text-xs font-bold text-slate-900">
                 🚚 ຄ່າຂົນສົ່ງມາລາວ (Shipping Fee)
               </span>
-              <span className="text-[10px] text-neon font-semibold">
+              <span className="text-[10px] text-slate-600 font-bold bg-slate-100 px-2 py-0.5 rounded-md">
                 {serviceType === 'BUY_FOR_YOU' ? 'ຮັບສັ່ງເຄື່ອງ' : 'ພຣີອໍເດີ'}
               </span>
             </div>
@@ -540,7 +540,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
             <div className="grid grid-cols-2 gap-2.5">
               {/* Field 1: Charged to Customer */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-200 flex items-center justify-between">
+                <label className="text-[11px] font-bold text-slate-900 flex items-center justify-between">
                   <span>ຄ່າສົ່ງເກັບລູກຄ້າ *</span>
                 </label>
                 <div className="relative">
@@ -551,10 +551,10 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                     value={shippingCostLAK || ''}
                     onChange={(e) => setShippingCostLAK(Number(e.target.value))}
                     placeholder="ເຊັ່ນ: 80000"
-                    className="w-full px-3 py-2 bg-background border border-neon/80 rounded-xl text-sm font-bold text-neon focus:outline-none focus:border-neon focus:ring-1 focus:ring-neon"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-slate-900 focus:bg-white"
                     autoFocus
                   />
-                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500">
                     ກີບ
                   </span>
                 </div>
@@ -562,7 +562,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
 
               {/* Field 2: Actual Cost to Logistics (Admin Only) */}
               <div className="space-y-1">
-                <label className="text-[11px] font-semibold text-slate-300 flex items-center justify-between">
+                <label className="text-[11px] font-semibold text-slate-700 flex items-center justify-between">
                   <span>ຕົ້ນທຶນສົ່ງຈິງ (ຮ້ານຈ່າຍ)</span>
                 </label>
                 <div className="relative">
@@ -573,9 +573,9 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
                     value={actualShippingCostLAK || ''}
                     onChange={(e) => setActualShippingCostLAK(Number(e.target.value))}
                     placeholder="ເຊັ່ນ: 50000"
-                    className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-sm font-bold text-slate-200 focus:outline-none focus:border-neon"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-slate-900 focus:bg-white"
                   />
-                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">
+                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500">
                     ກີບ
                   </span>
                 </div>
@@ -584,12 +584,12 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
 
             {/* Live Profit Preview on Shipping */}
             {effectiveShippingCharged > 0 && effectiveActualShipping > 0 && (
-              <div className="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs">
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+              <div className="px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                <span className="text-emerald-700 font-semibold flex items-center gap-1">
                   <TrendingUp size={14} />
                   ກຳໄລສ່ວນຕ່າງຄ່າສົ່ງ:
                 </span>
-                <span className="font-extrabold text-emerald-400">
+                <span className="font-extrabold text-emerald-700">
                   +{formatLAK(shippingProfitLAK)}
                 </span>
               </div>
@@ -599,63 +599,63 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
           {/* Row: Weight and Date */}
           <div className="grid grid-cols-2 gap-2.5">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">⚖️ ນ້ຳໜັກ (Kg)</label>
+              <label className="text-xs font-semibold text-slate-700">⚖️ ນ້ຳໜັກ (Kg)</label>
               <input
                 type="number"
                 step="0.1"
                 min="0"
                 value={weightKg || ''}
                 onChange={(e) => setWeightKg(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">📅 ວັນທີຮອດສາງ</label>
+              <label className="text-xs font-semibold text-slate-700">📅 ວັນທີຮອດສາງ</label>
               <input
                 type="date"
                 value={arrivedDate}
                 onChange={(e) => setArrivedDate(e.target.value)}
-                className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none"
               />
             </div>
           </div>
 
           {/* Notes */}
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-300">📝 ໝາຍເຫດເພີ່ມເຕີມ</label>
+            <label className="text-xs font-semibold text-slate-700">📝 ໝາຍເຫດເພີ່ມເຕີມ</label>
             <input
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="ເຊັ່ນ: ກ່ອງໃຫຍ່, ຝາກສາຂາດົງໂດກ"
-              className="w-full px-3 py-2 bg-background border border-slate-700 rounded-xl text-xs text-slate-100 focus:border-neon focus:outline-none"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none"
             />
           </div>
 
           {/* Calculated Summary Box */}
-          <div className="p-3.5 rounded-2xl bg-neon/5 border border-neon/30 space-y-2">
-            <div className="flex justify-between text-xs text-slate-300">
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 shadow-sm">
+            <div className="flex justify-between text-xs text-slate-700">
               <span>ຍອດລວມເກັບລູກຄ້າ (Total):</span>
-              <span className="font-bold text-slate-100">{formatLAK(totalCostLAK)}</span>
+              <span className="font-bold text-slate-900">{formatLAK(totalCostLAK)}</span>
             </div>
-            <div className="flex justify-between text-xs text-slate-300">
+            <div className="flex justify-between text-xs text-slate-700">
               <span>ຫັກມັດຈຳ:</span>
-              <span className="text-emerald-400">-{formatLAK(effectiveDepositLAK)}</span>
+              <span className="text-emerald-600 font-semibold">-{formatLAK(effectiveDepositLAK)}</span>
             </div>
-            <div className="pt-2 border-t border-neon/20 flex justify-between items-center">
-              <span className="text-xs font-bold text-neon">🔥 ຍອດ COD ທີ່ຕ້ອງເກັບ:</span>
-              <span className="text-lg font-black text-neon neon-glow-text">
+            <div className="pt-2 border-t border-slate-200 flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-900">🔥 ຍອດ COD ທີ່ຕ້ອງເກັບ:</span>
+              <span className="text-lg font-black text-slate-900">
                 {formatLAK(balanceDueLAK)}
               </span>
             </div>
 
             {/* Shop Profit Summary (Admin only view) */}
-            <div className="mt-2 pt-2 border-t border-slate-800 flex justify-between items-center text-xs">
-              <span className="text-slate-400 flex items-center gap-1 font-semibold">
-                <Sparkles size={13} className="text-emerald-400" />
+            <div className="mt-2 pt-2 border-t border-slate-200 flex justify-between items-center text-xs">
+              <span className="text-slate-600 flex items-center gap-1 font-semibold">
+                <Sparkles size={13} className="text-amber-500" />
                 ກຳໄລສຸດທິຂອງຮ້ານ (Profit):
               </span>
-              <span className="font-bold text-emerald-400">
+              <span className="font-bold text-emerald-700">
                 +{formatLAK(profitLAK)}
               </span>
             </div>
@@ -663,7 +663,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
         </div>
 
         {/* Modal Footer & Notification Actions */}
-        <div className="p-3.5 bg-neutral-900 border-t border-neutral-800 space-y-2">
+        <div className="p-3.5 bg-slate-50 border-t border-slate-200 space-y-2">
           {/* Arrived WhatsApp Notification Button */}
           {customerPhone && (
             <a
@@ -692,7 +692,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
               )}`}
               target="_blank"
               rel="noreferrer"
-              className="w-full py-2.5 px-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center justify-center gap-2 shadow-md transition-all"
+              className="w-full py-2.5 px-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center justify-center gap-2 shadow-md transition-all"
             >
               <span>📢 ສົ່ງ WhatsApp ແຈ້ງລູກຄ້າວ່າຂອງຮອດລາວແລ້ວ! 🇱🇦</span>
             </a>
@@ -704,8 +704,8 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
               onClick={handleCopyArrivalNotice}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all ${
                 copied
-                  ? 'bg-neutral-800 text-white border-white'
-                  : 'bg-neutral-900 text-neutral-300 border-neutral-700 hover:text-white hover:border-white'
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-700 border-slate-300 hover:text-slate-900 hover:border-slate-900 shadow-sm'
               }`}
             >
               {copied ? <Check size={14} /> : <Copy size={14} />}
@@ -715,7 +715,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({
             <button
               type="button"
               onClick={handleSave}
-              className="flex-1 py-2.5 px-3 rounded-2xl bg-white hover:bg-neutral-200 text-black text-xs font-black flex items-center justify-center gap-1.5 shadow-md"
+              className="flex-1 py-2.5 px-3 rounded-2xl bg-slate-900 hover:bg-black text-white text-xs font-black flex items-center justify-center gap-1.5 shadow-md transition-all"
             >
               <Check size={16} />
               ບັນທຶກຂໍ້ມູນ
